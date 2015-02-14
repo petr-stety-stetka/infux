@@ -1,13 +1,18 @@
 #infux
 
-infux is information program for linux, writed in C++.<br>
-infux supports this logos: archlinux, tux (yet).<br>
+Is information program for linux, writed in C++ (very fast). <br>
+Supports this logos: archlinux, tux (yet).<br>
 Size of logos is 38.
 
-#Screenshots
+##Screenshots:
 
 
-#Dependencies
+##Dependencies:
 lsb-release
 
+##TODO:
+Add more logos:
+- [ ] Fedora
+- [ ] Ubuntu
+- [ ] Other?
 
