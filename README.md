@@ -6,7 +6,7 @@ Supports this logos: archlinux, tux (yet).<br>
 Size of logos is 38.
 
 ##Screenshots:
-<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-arch.png" width="380px" /> <img src="https://github.com/petr-stety-stetka/infux/blob/master/screenshots/screenshot-tux.png" width="380px" />
+<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-arch.png" width="500px" /> <img src="https://github.com/petr-stety-stetka/infux/blob/master/screenshots/screenshot-tux.png" width="500px" />
 
 ##Dependencies:
 lsb-release
