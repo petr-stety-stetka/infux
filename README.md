@@ -1,6 +1,6 @@
 #infux
 
-Is information program for linux, writed in C++ (very fast). <br>
+Is information program for linux, writen in C++ (very fast). <br>
 Output can colored or nocolored.
 Supports this logos: archlinux, tux (yet).<br>
 Size of logos is 38.
