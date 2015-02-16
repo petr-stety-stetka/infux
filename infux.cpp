@@ -5,28 +5,30 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION 0.3
+#define VERSION "0.3.5"
 
 using namespace std;
 
+//For getting information about os (machine - name...)
 struct utsname utsnameBuffer;
-string distro;
+string distroName;
 string distroId;
 int uptimeHours = 0;
 int uptimeMinutes = 0;
-string cpu;
+string cpuName;
 int ramTotal = 0;
 int ramUsed = 0;
-double ramUsedInPercentages = 0;
+double ramUsedInPct = 0;
+//For getting information about memory (HDD)
 struct statvfs statvfsBuffer;
-double totalRoot = 0;
-double freeRoot = 0;
-double usedRoot = 0;
-double usedRootInPercentages = 0;
-double totalHome = 0;
-double freeHome = 0;
-double usedHome = 0;
-double usedHomeInPercentages = 0;
+double memoryTotalRoot = 0;
+double memoryFreeRoot = 0;
+double memoryUsedRoot = 0;
+double memoryUsedRootInPct = 0;
+double memoryTotalHome = 0;
+double memoryFreeHome = 0;
+double memoryUsedHome = 0;
+double memoryUsedHomeInPct = 0;
 bool colors = true;
 
 enum logo
@@ -42,14 +44,14 @@ void getSpaceHome()
     if((statvfs("/home", &statvfsBuffer)) < 0)
         cout << "ERROR: Failed statvfs /home" << endl;
 
-    totalHome = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
-    totalHome = ceil(totalHome * 10) / 10; //round to one decimal place
-    freeHome = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
-    freeHome = ceil(freeHome * 10) / 10;
-    usedHome = totalHome - freeHome;
-    usedHome = ceil(usedHome * 10) / 10;
-    usedHomeInPercentages = (100 / totalHome) * usedHome;
-    usedHomeInPercentages = ceil(usedHomeInPercentages * 10) / 10;
+    memoryTotalHome = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
+    memoryTotalHome = ceil(memoryTotalHome * 10) / 10; //round to one decimal place
+    memoryFreeHome = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
+    memoryFreeHome = ceil(memoryFreeHome * 10) / 10;
+    memoryUsedHome = memoryTotalHome - memoryFreeHome;
+    memoryUsedHome = ceil(memoryUsedHome * 10) / 10;
+    memoryUsedHomeInPct = (100 / memoryTotalHome) * memoryUsedHome;
+    memoryUsedHomeInPct = ceil(memoryUsedHomeInPct * 10) / 10;
 }
 
 void getSpaceRoot()
@@ -57,14 +59,14 @@ void getSpaceRoot()
     if((statvfs("/", &statvfsBuffer)) < 0)
         cout << "ERROR: Failed statvfs /" << endl;
 
-    totalRoot = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
-    totalRoot = ceil(totalRoot * 10) / 10; //round to one decimal place
-    freeRoot = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
-    freeRoot = ceil(freeRoot * 10) / 10;
-    usedRoot = totalRoot - freeRoot;
-    usedRoot = ceil(usedRoot * 10) / 10;
-    usedRootInPercentages = (100 / totalRoot) * usedRoot;
-    usedRootInPercentages = ceil(usedRootInPercentages * 10) / 10;
+    memoryTotalRoot = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
+    memoryTotalRoot = ceil(memoryTotalRoot * 10) / 10; //round to one decimal place
+    memoryFreeRoot = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
+    memoryFreeRoot = ceil(memoryFreeRoot * 10) / 10;
+    memoryUsedRoot = memoryTotalRoot - memoryFreeRoot;
+    memoryUsedRoot = ceil(memoryUsedRoot * 10) / 10;
+    memoryUsedRootInPct = (100 / memoryTotalRoot) * memoryUsedRoot;
+    memoryUsedRootInPct = ceil(memoryUsedRootInPct * 10) / 10;
 }
 
 void getRam()
@@ -104,8 +106,8 @@ void getRam()
 
     ramUsed = ramUsed / 1024; //To MB
     ramTotal = ramTotal / 1024;
-    ramUsedInPercentages = (100 / (double) ramTotal) * ramUsed;
-    ramUsedInPercentages = ceil(ramUsedInPercentages * 10) / 10;
+    ramUsedInPct = (100 / (double) ramTotal) * ramUsed;
+    ramUsedInPct = ceil(ramUsedInPct * 10) / 10;
 }
 
 void getCpu()
@@ -116,15 +118,15 @@ void getCpu()
     {
         for(int i = 0; i < 5; i++)
         {
-            getline(ifsCpuInfo, cpu);
+            getline(ifsCpuInfo, cpuName);
         }
         ifsCpuInfo.close();
     }
-    removeSubString(cpu, "model name\t: ");
-    removeSubString(cpu, "(R)"); //For shortest lenght
-    removeSubString(cpu, "(TM)"); //For shortest lenght
-    removeSubString(cpu, "@ "); //For shortest lenght
-    removeSubString(cpu, "CPU "); //For shortest lenght
+    removeSubString(cpuName, "model name\t: ");
+    removeSubString(cpuName, "(R)"); //For shortest lenght
+    removeSubString(cpuName, "(TM)"); //For shortest lenght
+    removeSubString(cpuName, "@ "); //For shortest lenght
+    removeSubString(cpuName, "CPU "); //For shortest lenght
 }
 
 void getUptime()
@@ -162,13 +164,13 @@ void getDistro()
     {
         getline(ifslsbRelease, distroId);
         getline(ifslsbRelease, distroId);
-        getline(ifslsbRelease, distro);
-        getline(ifslsbRelease, distro);
+        getline(ifslsbRelease, distroName);
+        getline(ifslsbRelease, distroName);
         ifslsbRelease.close();
     }
     removeSubString(distroId, "DISTRIB_ID=");
-    removeSubString(distro, "DISTRIB_DESCRIPTION=\"");
-    removeSubString(distro, "\"");
+    removeSubString(distroName, "DISTRIB_DESCRIPTION=\"");
+    removeSubString(distroName, "\"");
 }
 
 void getInfo()
@@ -203,24 +205,24 @@ void writeLogo(logo logo1)
 
         offColor = "\033[0m";
 
-        if(usedRootInPercentages < 50)
+        if(memoryUsedRootInPct < 50)
             colorUsedRoot = "\033[1;32m";
-        else if(usedRootInPercentages < 75)
+        else if(memoryUsedRootInPct < 75)
             colorUsedRoot = "\033[1;33m";
         else
             colorUsedRoot = "\033[1;31m";
 
-        if(usedHomeInPercentages < 50)
+        if(memoryUsedHomeInPct < 50)
             colorUsedHome = "\033[1;32m";
-        else if(usedHomeInPercentages < 75)
+        else if(memoryUsedHomeInPct < 75)
             colorUsedHome = "\033[1;33m";
         else
             colorUsedHome = "\033[1;31m";
 
 
-        if(ramUsedInPercentages < 50)
+        if(ramUsedInPct < 50)
             colorRamUsed = "\033[1;32m";
-        else if(ramUsedInPercentages < 75)
+        else if(ramUsedInPct < 75)
             colorRamUsed = "\033[1;33m";
         else
             colorRamUsed = "\033[1;31m";
@@ -232,18 +234,18 @@ void writeLogo(logo logo1)
             cout << blueLightBold << endl <<
                     "                  .`                    " << endl <<
                     "                 `oo`                   " << "Hello," << endl <<
-                    "                 +ss+                   " << "I'am " << distro << ", best OS ever." << endl <<
+                    "                 +ss+                   " << "I'am " << distroName << ", best OS ever." << endl <<
                     "                /ssss/                  " << endl <<
-                    "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distro << " " << utsnameBuffer.machine << blueLightBold << endl <<
+                    "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << blueLightBold << endl <<
                     "              .ssssssss:                " << blueLightBold << "Hostname: " << offColor << utsnameBuffer.nodename << blueLightBold << endl <<
                     "             -+:/sssssss:               " << blueLightBold << "Kernel Release: " << offColor << utsnameBuffer.release << blueLightBold << endl <<
                     "            -sss" << blueLight << "+ARCH+" << blueLightBold << "sss:              " << endl <<
                     "           -ssssssssssssss:             " << blueLightBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m" << blueLightBold << endl <<
-                    "          :ssss" << blueLight << "+LINUX+" << blueLightBold << "sssss:            " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPercentages << "%)" << blueLight << endl <<
-                    "         " << blueLightBold << ":s" << blueLight << "ssssssssssssssss" << blueLightBold << "s/           " << "CPU: " << offColor << cpu << blueLight << endl <<
+                    "          :ssss" << blueLight << "+LINUX+" << blueLightBold << "sssss:            " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)" << blueLight << endl <<
+                    "         " << blueLightBold << ":s" << blueLight << "ssssssssssssssss" << blueLightBold << "s/           " << "CPU: " << offColor << cpuName << blueLight << endl <<
                     "        :sssssss+.  .+sssssss/          " << endl <<
-                    "       /sssssss+      /sssssss/         " << blueLightBold << "Root: " << colorUsedRoot << usedRoot << "GB" << offColor << " / " << totalRoot << "GB (" << usedRootInPercentages << "%)" << blueLight << endl <<
-                    "      /ssssssss.      `ssssssos+        " << blueLightBold << "Home: " << colorUsedHome << usedHome << "GB" << offColor << " / " << totalHome << "GB (" << usedHomeInPercentages << "%)" << blueLight << endl <<
+                    "       /sssssss+      /sssssss/         " << blueLightBold << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)" << blueLight << endl <<
+                    "      /ssssssss.      `ssssssos+        " << blueLightBold << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)" << blueLight << endl <<
                     "     +sssssssss        sssssss+/.       " << endl <<
                     "   `+sssssss+/:`       :/+sssssso/`     " << endl <<
                     "  `osss+/-.                .-/+ssso`    " << endl <<
@@ -254,18 +256,18 @@ void writeLogo(logo logo1)
             cout << bold << endl <<
                     "              .ohmNNmy+.              " << endl <<
                     "             .NMMMMMNdNN.             " << yellowBold << "Hello," << bold << endl <<
-                    "             yMNMMMNMMMMM.            " << yellowBold << "I'am " << distro << ", best OS ever." << bold << endl <<
+                    "             yMNMMMNMMMMM.            " << yellowBold << "I'am " << distroName << ", best OS ever." << bold << endl <<
                     "             ho' 'bnd' 'Mo            " << endl <<
-                    "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distro << " " << utsnameBuffer.machine << bold << endl <<
+                    "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << bold << endl <<
                     "             os" << yellowBold << "::::-::" << bold << "dMMm            " << yellowBold << "Hostname: " << offColor << utsnameBuffer.nodename << bold << endl <<
                     "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel Release: " << offColor << utsnameBuffer.release << bold << endl <<
                     "            /m-" << yellowBold << "`:/-`" << bold << "   oMMMh`         " << endl <<
                     "          `hN.          hMMMN:        " << yellowBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m" << bold << endl <<
-                    "         .NMo.          :mMNMMo       " << yellowBold << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPercentages << "%)" << bold << endl <<
-                    "        `mN+     " << offColor << "GNU" << bold << "     .mNNMMs      " << yellowBold << "CPU: " << offColor << cpu << bold << endl <<
+                    "         .NMo.          :mMNMMo       " << yellowBold << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)" << bold << endl <<
+                    "        `mN+     " << offColor << "GNU" << bold << "     .mNNMMs      " << yellowBold << "CPU: " << offColor << cpuName << bold << endl <<
                     "        hNo               +MMNMM.     " << endl <<
-                    "       hNN`     " << offColor << "LINUX" << bold << "     :MNMMMd     " << yellowBold << "Root: " << colorUsedRoot << usedRoot << "GB" << offColor << " / " << totalRoot << "GB (" << usedRootInPercentages << "%)" << bold << endl <<
-                    "      `hyd`               /NNMNNh     " << yellowBold << "Home: " << colorUsedHome << usedHome << "GB" << offColor << " / " << totalHome << "GB (" << usedHomeInPercentages << "%)" << bold << endl <<
+                    "       hNN`     " << offColor << "LINUX" << bold << "     :MNMMMd     " << yellowBold << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)" << bold << endl <<
+                    "      `hyd`               /NNMNNh     " << yellowBold << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)" << bold << endl <<
                     "     `" << yellowBold << "---:" << bold << "ss.            " << yellowBold << "-/" << bold << "MMMN" << yellowBold << "o-     " << endl <<
                     "  --::-----" << bold << "oNd " << yellowBold << "         " << bold << "/" << yellowBold << "::+" << bold << "so" << yellowBold << ":--`    " << endl <<
                     "  ----------" << bold << "/dy        .y" << yellowBold << "/:--------.  " << endl <<
