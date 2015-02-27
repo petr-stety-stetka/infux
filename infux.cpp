@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION "0.3.5"
+#define VERSION "0.4"
 
 using namespace std;
 
@@ -37,6 +37,29 @@ enum logo
     tux
 } logoSelected;
 
+void getSpaceHome();
+
+void getSpaceRoot();
+
+void getRam();
+
+void getCpu();
+
+void getUptime();
+
+void getOs();
+
+void getDistro();
+
+void getInfo();
+
+void writeLogo(logo logo1);
+
+void writeInfo();
+
+void showVersion();
+
+void showHelp();
 void removeSubString(string &sInput, const string &subString);
 
 void getSpaceHome()
@@ -231,50 +254,50 @@ void writeLogo(logo logo1)
     switch(logo1)
     {
         case archLinux:
-            cout << blueLightBold << endl <<
-                    "                  .`                    " << endl <<
-                    "                 `oo`                   " << "Hello," << endl <<
-                    "                 +ss+                   " << "I'am " << distroName << ", best OS ever." << endl <<
-                    "                /ssss/                  " << endl <<
-                    "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << blueLightBold << endl <<
-                    "              .ssssssss:                " << blueLightBold << "Hostname: " << offColor << utsnameBuffer.nodename << blueLightBold << endl <<
-                    "             -+:/sssssss:               " << blueLightBold << "Kernel Release: " << offColor << utsnameBuffer.release << blueLightBold << endl <<
-                    "            -sss" << blueLight << "+ARCH+" << blueLightBold << "sss:              " << endl <<
-                    "           -ssssssssssssss:             " << blueLightBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m" << blueLightBold << endl <<
-                    "          :ssss" << blueLight << "+LINUX+" << blueLightBold << "sssss:            " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)" << blueLight << endl <<
-                    "         " << blueLightBold << ":s" << blueLight << "ssssssssssssssss" << blueLightBold << "s/           " << "CPU: " << offColor << cpuName << blueLight << endl <<
-                    "        :sssssss+.  .+sssssss/          " << endl <<
-                    "       /sssssss+      /sssssss/         " << blueLightBold << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)" << blueLight << endl <<
-                    "      /ssssssss.      `ssssssos+        " << blueLightBold << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)" << blueLight << endl <<
-                    "     +sssssssss        sssssss+/.       " << endl <<
-                    "   `+sssssss+/:`       :/+sssssso/`     " << endl <<
-                    "  `osss+/-.                .-/+ssso`    " << endl <<
-                    " .oo/.`                        `-/oo.   " << endl <<
-                    " -`                                `-   " << offColor << endl << endl;
+            cout << blueLightBold << '\n' <<
+                    "                  .`                    \n" <<
+                    "                 `oo`                   " << "Hello,\n" <<
+                    "                 +ss+                   " << "I'am " << distroName << ", best OS ever.\n" <<
+                    "                /ssss/                  \n" <<
+                    "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << '\n' << blueLightBold <<
+                    "              .ssssssss:                " << blueLightBold << "Hostname: " << offColor << utsnameBuffer.nodename << '\n' << blueLightBold <<
+                    "             -+:/sssssss:               " << blueLightBold << "Kernel Release: " << offColor << utsnameBuffer.release << '\n' << blueLightBold <<
+                    "            -sss" << blueLight << "+ARCH+" << blueLightBold << "sss:              \n" <<
+                    "           -ssssssssssssss:             " << blueLightBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << blueLightBold <<
+                    "          :ssss" << blueLight << "+LINUX+" << blueLightBold << "sssss:            " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << blueLight <<
+                    "         " << blueLightBold << ":s" << blueLight << "ssssssssssssssss" << blueLightBold << "s/           " << "CPU: " << offColor << cpuName << '\n' << blueLight <<
+                    "        :sssssss+.  .+sssssss/          \n" <<
+                    "       /sssssss+      /sssssss/         " << blueLightBold << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)\n" << blueLight <<
+                    "      /ssssssss.      `ssssssos+        " << blueLightBold << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)\n" << blueLight <<
+                    "     +sssssssss        sssssss+/.       \n" <<
+                    "   `+sssssss+/:`       :/+sssssso/`     \n" <<
+                    "  `osss+/-.                .-/+ssso`    \n" <<
+                    " .oo/.`                        `-/oo.   \n" <<
+                    " -`                                `-   \n" << offColor << endl;
             break;
         case tux:
-            cout << bold << endl <<
-                    "              .ohmNNmy+.              " << endl <<
-                    "             .NMMMMMNdNN.             " << yellowBold << "Hello," << bold << endl <<
-                    "             yMNMMMNMMMMM.            " << yellowBold << "I'am " << distroName << ", best OS ever." << bold << endl <<
-                    "             ho' 'bnd' 'Mo            " << endl <<
-                    "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << bold << endl <<
-                    "             os" << yellowBold << "::::-::" << bold << "dMMm            " << yellowBold << "Hostname: " << offColor << utsnameBuffer.nodename << bold << endl <<
-                    "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel Release: " << offColor << utsnameBuffer.release << bold << endl <<
-                    "            /m-" << yellowBold << "`:/-`" << bold << "   oMMMh`         " << endl <<
-                    "          `hN.          hMMMN:        " << yellowBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m" << bold << endl <<
-                    "         .NMo.          :mMNMMo       " << yellowBold << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)" << bold << endl <<
-                    "        `mN+     " << offColor << "GNU" << bold << "     .mNNMMs      " << yellowBold << "CPU: " << offColor << cpuName << bold << endl <<
-                    "        hNo               +MMNMM.     " << endl <<
-                    "       hNN`     " << offColor << "LINUX" << bold << "     :MNMMMd     " << yellowBold << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)" << bold << endl <<
-                    "      `hyd`               /NNMNNh     " << yellowBold << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)" << bold << endl <<
-                    "     `" << yellowBold << "---:" << bold << "ss.            " << yellowBold << "-/" << bold << "MMMN" << yellowBold << "o-     " << endl <<
-                    "  --::-----" << bold << "oNd " << yellowBold << "         " << bold << "/" << yellowBold << "::+" << bold << "so" << yellowBold << ":--`    " << endl <<
-                    "  ----------" << bold << "/dy        .y" << yellowBold << "/:--------.  " << endl <<
-                    " `-----------" << bold << ":/.` `.:ohMh" << yellowBold << ":---------`  " << endl <<
-                    " `-:///::---::" << bold << "+NMMMMNNMMs" << yellowBold << "/:--:/:-.`   " << endl <<
-                    "   ``-::///+++/" << bold << ":.....--:" << yellowBold << "+oo++/-.``    " << endl <<
-                    "         ``````          " << "``````       " << offColor << endl << endl;
+            cout << bold << '\n' <<
+                    "              .ohmNNmy+.              \n" <<
+                    "             .NMMMMMNdNN.             " << yellowBold << "Hello,\n" << bold <<
+                    "             yMNMMMNMMMMM.            " << yellowBold << "I'am " << distroName << ", best OS ever.\n" << bold <<
+                    "             ho' 'bnd' 'Mo            \n" <<
+                    "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << '\n' << bold <<
+                    "             os" << yellowBold << "::::-::" << bold << "dMMm            " << yellowBold << "Hostname: " << offColor << utsnameBuffer.nodename << '\n' << bold <<
+                    "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel Release: " << offColor << utsnameBuffer.release << '\n' << bold <<
+                    "            /m-" << yellowBold << "`:/-`" << bold << "   oMMMh`         \n" <<
+                    "          `hN.          hMMMN:        " << yellowBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << bold <<
+                    "         .NMo.          :mMNMMo       " << yellowBold << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << bold <<
+                    "        `mN+     " << offColor << "GNU" << bold << "     .mNNMMs      " << yellowBold << "CPU: " << offColor << cpuName << '\n' << bold <<
+                    "        hNo               +MMNMM.     \n" <<
+                    "       hNN`     " << offColor << "LINUX" << bold << "     :MNMMMd     " << yellowBold << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)\n" << bold <<
+                    "      `hyd`               /NNMNNh     " << yellowBold << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)\n" << bold <<
+                    "     `" << yellowBold << "---:" << bold << "ss.            " << yellowBold << "-/" << bold << "MMMN" << yellowBold << "o-     \n" <<
+                    "  --::-----" << bold << "oNd " << yellowBold << "         " << bold << "/" << yellowBold << "::+" << bold << "so" << yellowBold << ":--`    \n" <<
+                    "  ----------" << bold << "/dy        .y" << yellowBold << "/:--------.  \n" <<
+                    " `-----------" << bold << ":/.` `.:ohMh" << yellowBold << ":---------`  \n" <<
+                    " `-:///::---::" << bold << "+NMMMMNNMMs" << yellowBold << "/:--:/:-.`   \n" <<
+                    "   ``-::///+++/" << bold << ":.....--:" << yellowBold << "+oo++/-.``    \n" <<
+                    "         ``````          " << "``````       \n" << offColor << endl;
             break;
     }
 }
@@ -305,16 +328,15 @@ void showVersion()
 
 void showHelp()
 {
-    cout << "Usage: infux [OPTIONS]" << endl << endl;
-    cout << "infux is a program for display info about system." << endl;
-    cout << "Created by Petr Štětka from Bohemia (CZ) in C++." << endl << endl;
-
-    cout << "OPTIONS:" << endl;
-    cout << "  -c, --no-colors              Turn off colors." << endl;
-    cout << "  -l[LOGO], --logo[LOGO]       Show another logo." << endl;
-    cout << "       LOGO: \"tux\", \"archlinux\"" << endl << endl;
-    cout << "  -h, --help                   Show this help." << endl;
-    cout << "  -v, --version                Show version." << endl;
+    cout << "Usage: infux [OPTIONS]\n\n"
+            "infux is a program for display info about system.\n"
+            "Created by Petr Štětka from Bohemia (CZ) in C++.\n\n"
+            "OPTIONS:\n"
+            "  -c, --no-colors              Turn off colors.\n"
+            "  -l[LOGO], --logo[LOGO]       Show another logo.\n"
+            "       LOGO: \"tux\", \"archlinux\"\n\n"
+            "  -h, --help                   Show this help.\n"
+            "  -v, --version                Show version." << endl;
 }
 
 void removeSubString(string &sInput, const string &subString)
