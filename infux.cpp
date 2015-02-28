@@ -5,30 +5,38 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION "0.4"
+#define VERSION "0.4.1"
 
 using namespace std;
 
 //For getting information about os (machine - name...)
 struct utsname utsnameBuffer;
-string distroName;
-string distroId;
-int uptimeHours = 0;
-int uptimeMinutes = 0;
-string cpuName;
-int ramTotal = 0;
-int ramUsed = 0;
-double ramUsedInPct = 0;
+
 //For getting information about memory (HDD)
 struct statvfs statvfsBuffer;
-double memoryTotalRoot = 0;
-double memoryFreeRoot = 0;
-double memoryUsedRoot = 0;
-double memoryUsedRootInPct = 0;
-double memoryTotalHome = 0;
-double memoryFreeHome = 0;
-double memoryUsedHome = 0;
-double memoryUsedHomeInPct = 0;
+
+string distroName;
+string distroId;
+string cpuName;
+string machine; //x86_64 or i...
+string hostname;
+string kernelReleaseVersion;
+
+int uptimeHours(0);
+int uptimeMinutes(0);
+int ramTotal(0);
+int ramUsed(0);
+
+double ramUsedInPct(0);
+double memoryTotalRoot(0);
+double memoryFreeRoot(0);
+double memoryUsedRoot(0);
+double memoryUsedRootInPct(0);
+double memoryTotalHome(0);
+double memoryFreeHome(0);
+double memoryUsedHome(0);
+double memoryUsedHomeInPct(0);
+
 bool colors = true;
 
 enum logo
@@ -65,7 +73,7 @@ void removeSubString(string &sInput, const string &subString);
 void getSpaceHome()
 {
     if((statvfs("/home", &statvfsBuffer)) < 0)
-        cout << "ERROR: Failed statvfs /home" << endl;
+        cout << "ERROR: Failed statvfs for /home" << endl;
 
     memoryTotalHome = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
     memoryTotalHome = ceil(memoryTotalHome * 10) / 10; //round to one decimal place
@@ -80,7 +88,7 @@ void getSpaceHome()
 void getSpaceRoot()
 {
     if((statvfs("/", &statvfsBuffer)) < 0)
-        cout << "ERROR: Failed statvfs /" << endl;
+        cout << "ERROR: Failed statvfs for /" << endl;
 
     memoryTotalRoot = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
     memoryTotalRoot = ceil(memoryTotalRoot * 10) / 10; //round to one decimal place
@@ -100,6 +108,7 @@ void getRam()
     string sRamBuffers;
     string sRamCached;
     string sRamSwapCached;
+
     ifsMemInfo.open("/proc/meminfo");
     if(ifsMemInfo.is_open())
     {
@@ -109,12 +118,12 @@ void getRam()
         getline(ifsMemInfo, sRamBuffers);
         getline(ifsMemInfo, sRamCached);
         getline(ifsMemInfo, sRamSwapCached);
+
         ifsMemInfo.close();
     }
 
     removeSubString(sRamTotal, "MemTotal: ");
     removeSubString(sRamTotal, " kB");
-
     removeSubString(sRamFree, "MemFree: ");
     removeSubString(sRamFree, " kB");
     removeSubString(sRamBuffers, "Buffers: ");
@@ -137,6 +146,7 @@ void getCpu()
 {
     ifstream ifsCpuInfo;
     ifsCpuInfo.open("/proc/cpuinfo");
+
     if(ifsCpuInfo.is_open())
     {
         for(int i = 0; i < 5; i++)
@@ -145,6 +155,7 @@ void getCpu()
         }
         ifsCpuInfo.close();
     }
+
     removeSubString(cpuName, "model name\t: ");
     removeSubString(cpuName, "(R)"); //For shortest lenght
     removeSubString(cpuName, "(TM)"); //For shortest lenght
@@ -157,6 +168,7 @@ void getUptime()
     ifstream ifsUptime;
     string sUptime;
     ifsUptime.open("/proc/uptime");
+
     if(ifsUptime.is_open())
     {
         getline(ifsUptime, sUptime);
@@ -177,12 +189,17 @@ void getOs()
         cout << "ERROR: Failed uname" << endl;
         exit(EXIT_FAILURE);
     }
+
+    machine = utsnameBuffer.machine;
+    hostname = utsnameBuffer.nodename;
+    kernelReleaseVersion = utsnameBuffer.release;
 }
 
 void getDistro()
 {
     ifstream ifslsbRelease;
     ifslsbRelease.open("/etc/lsb-release");
+
     if(ifslsbRelease.is_open())
     {
         getline(ifslsbRelease, distroId);
@@ -213,19 +230,17 @@ void writeLogo(logo logo1)
     string blueLightBold;
     string blueLight;
     string yellowBold;
-
     string offColor;
-
     string colorUsedRoot;
     string colorUsedHome;
     string colorRamUsed;
+
     if(colors)
     {
         bold = "\033[0;1m";
         blueLightBold = "\033[1;36m";
         blueLight = "\033[0;36m";
         yellowBold = "\033[1;33m";
-
         offColor = "\033[0m";
 
         if(memoryUsedRootInPct < 50)
@@ -259,9 +274,9 @@ void writeLogo(logo logo1)
                     "                 `oo`                   " << "Hello,\n" <<
                     "                 +ss+                   " << "I'am " << distroName << ", best OS ever.\n" <<
                     "                /ssss/                  \n" <<
-                    "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << '\n' << blueLightBold <<
-                    "              .ssssssss:                " << blueLightBold << "Hostname: " << offColor << utsnameBuffer.nodename << '\n' << blueLightBold <<
-                    "             -+:/sssssss:               " << blueLightBold << "Kernel Release: " << offColor << utsnameBuffer.release << '\n' << blueLightBold <<
+                    "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distroName << " " << machine << '\n' << blueLightBold <<
+                    "              .ssssssss:                " << blueLightBold << "Hostname: " << offColor << hostname << '\n' << blueLightBold <<
+                    "             -+:/sssssss:               " << blueLightBold << "Kernel Release: " << offColor << kernelReleaseVersion << '\n' << blueLightBold <<
                     "            -sss" << blueLight << "+ARCH+" << blueLightBold << "sss:              \n" <<
                     "           -ssssssssssssss:             " << blueLightBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << blueLightBold <<
                     "          :ssss" << blueLight << "+LINUX+" << blueLightBold << "sssss:            " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << blueLight <<
@@ -281,9 +296,9 @@ void writeLogo(logo logo1)
                     "             .NMMMMMNdNN.             " << yellowBold << "Hello,\n" << bold <<
                     "             yMNMMMNMMMMM.            " << yellowBold << "I'am " << distroName << ", best OS ever.\n" << bold <<
                     "             ho' 'bnd' 'Mo            \n" <<
-                    "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distroName << " " << utsnameBuffer.machine << '\n' << bold <<
-                    "             os" << yellowBold << "::::-::" << bold << "dMMm            " << yellowBold << "Hostname: " << offColor << utsnameBuffer.nodename << '\n' << bold <<
-                    "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel Release: " << offColor << utsnameBuffer.release << '\n' << bold <<
+                    "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distroName << " " << machine << '\n' << bold <<
+                    "             os" << yellowBold << "::::-::" << bold << "dMMm            " << yellowBold << "Hostname: " << offColor << hostname << '\n' << bold <<
+                    "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel Release: " << offColor << kernelReleaseVersion << '\n' << bold <<
                     "            /m-" << yellowBold << "`:/-`" << bold << "   oMMMh`         \n" <<
                     "          `hN.          hMMMN:        " << yellowBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << bold <<
                     "         .NMo.          :mMNMMo       " << yellowBold << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << bold <<
