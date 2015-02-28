@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION "0.4.1"
+#define VERSION "0.4.2"
 
 using namespace std;
 
@@ -46,27 +46,16 @@ enum logo
 } logoSelected;
 
 void getSpaceHome();
-
 void getSpaceRoot();
-
 void getRam();
-
 void getCpu();
-
 void getUptime();
-
 void getOs();
-
 void getDistro();
-
 void getInfo();
-
 void writeLogo(logo logo1);
-
 void writeInfo();
-
 void showVersion();
-
 void showHelp();
 void removeSubString(string &sInput, const string &subString);
 
@@ -370,7 +359,8 @@ int main(int argc, char *argv[])
         default:
             for(int i = 1; i < argc; i++)
             {
-                if(argv[i] == string("-h") || argv[i] == string("--h") || argv[i] == string("-help") || argv[i] == string("--help"))
+                if(argv[i] == string("-h") || argv[i] == string("--h") ||
+                        argv[i] == string("-help") || argv[i] == string("--help"))
                     showHelp();
                 else
                 {
