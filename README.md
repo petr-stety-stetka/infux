@@ -17,3 +17,5 @@ Add more logos:
 - [ ] Ubuntu
 - [ ] Other?
 
+#License 
+Code is under GNU GPLv3 license.
