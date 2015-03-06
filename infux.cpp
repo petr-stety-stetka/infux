@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION "0.4.2"
+#define VERSION "0.4.9"
 
 using namespace std;
 
@@ -41,9 +41,12 @@ bool colors = true;
 
 enum logo
 {
+    automatic,
+    tux,
     archLinux,
-    tux
-} logoSelected;
+    fedora
+};
+logo logoSelected(automatic);
 
 void getSpaceHome();
 void getSpaceRoot();
@@ -62,31 +65,35 @@ void removeSubString(string &sInput, const string &subString);
 void getSpaceHome()
 {
     if((statvfs("/home", &statvfsBuffer)) < 0)
-        cout << "ERROR: Failed statvfs for /home" << endl;
-
-    memoryTotalHome = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
-    memoryTotalHome = ceil(memoryTotalHome * 10) / 10; //round to one decimal place
-    memoryFreeHome = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
-    memoryFreeHome = ceil(memoryFreeHome * 10) / 10;
-    memoryUsedHome = memoryTotalHome - memoryFreeHome;
-    memoryUsedHome = ceil(memoryUsedHome * 10) / 10;
-    memoryUsedHomeInPct = (100 / memoryTotalHome) * memoryUsedHome;
-    memoryUsedHomeInPct = ceil(memoryUsedHomeInPct * 10) / 10;
+        cerr << "ERROR: Failed statvfs for /home." << endl;
+    else
+    {
+        memoryTotalHome = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
+        memoryTotalHome = ceil(memoryTotalHome * 10) / 10; //round to one decimal place
+        memoryFreeHome = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
+        memoryFreeHome = ceil(memoryFreeHome * 10) / 10;
+        memoryUsedHome = memoryTotalHome - memoryFreeHome;
+        memoryUsedHome = ceil(memoryUsedHome * 10) / 10;
+        memoryUsedHomeInPct = (100 / memoryTotalHome) * memoryUsedHome;
+        memoryUsedHomeInPct = ceil(memoryUsedHomeInPct * 10) / 10;
+    }
 }
 
 void getSpaceRoot()
 {
     if((statvfs("/", &statvfsBuffer)) < 0)
-        cout << "ERROR: Failed statvfs for /" << endl;
-
-    memoryTotalRoot = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
-    memoryTotalRoot = ceil(memoryTotalRoot * 10) / 10; //round to one decimal place
-    memoryFreeRoot = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
-    memoryFreeRoot = ceil(memoryFreeRoot * 10) / 10;
-    memoryUsedRoot = memoryTotalRoot - memoryFreeRoot;
-    memoryUsedRoot = ceil(memoryUsedRoot * 10) / 10;
-    memoryUsedRootInPct = (100 / memoryTotalRoot) * memoryUsedRoot;
-    memoryUsedRootInPct = ceil(memoryUsedRootInPct * 10) / 10;
+        cerr << "ERROR: Failed statvfs for /." << endl;
+    else
+    {
+        memoryTotalRoot = statvfsBuffer.f_blocks * statvfsBuffer.f_frsize / (double) GB;
+        memoryTotalRoot = ceil(memoryTotalRoot * 10) / 10; //round to one decimal place
+        memoryFreeRoot = statvfsBuffer.f_bfree * statvfsBuffer.f_frsize / (double) GB;
+        memoryFreeRoot = ceil(memoryFreeRoot * 10) / 10;
+        memoryUsedRoot = memoryTotalRoot - memoryFreeRoot;
+        memoryUsedRoot = ceil(memoryUsedRoot * 10) / 10;
+        memoryUsedRootInPct = (100 / memoryTotalRoot) * memoryUsedRoot;
+        memoryUsedRootInPct = ceil(memoryUsedRootInPct * 10) / 10;
+    }
 }
 
 void getRam()
@@ -99,7 +106,9 @@ void getRam()
     string sRamSwapCached;
 
     ifsMemInfo.open("/proc/meminfo");
-    if(ifsMemInfo.is_open())
+    if(!ifsMemInfo)
+        cerr << "ERROR: Failed open file /proc/meminfo." << endl;
+    else
     {
         getline(ifsMemInfo, sRamTotal);
         getline(ifsMemInfo, sRamFree);
@@ -108,27 +117,25 @@ void getRam()
         getline(ifsMemInfo, sRamCached);
         getline(ifsMemInfo, sRamSwapCached);
 
-        ifsMemInfo.close();
+        removeSubString(sRamTotal, "MemTotal: ");
+        removeSubString(sRamTotal, " kB");
+        removeSubString(sRamFree, "MemFree: ");
+        removeSubString(sRamFree, " kB");
+        removeSubString(sRamBuffers, "Buffers: ");
+        removeSubString(sRamBuffers, " kB");
+        removeSubString(sRamCached, "Cached: ");
+        removeSubString(sRamCached, " kB");
+        removeSubString(sRamSwapCached, "SwapCached: ");
+        removeSubString(sRamSwapCached, " kB");
+
+        ramTotal = stoi(sRamTotal);
+        ramUsed = ramTotal - stoi(sRamFree) - stoi(sRamBuffers) - stoi(sRamCached) - stoi(sRamSwapCached);
+
+        ramUsed = ramUsed / 1024; //To MB
+        ramTotal = ramTotal / 1024;
+        ramUsedInPct = (100 / (double) ramTotal) * ramUsed;
+        ramUsedInPct = ceil(ramUsedInPct * 10) / 10;
     }
-
-    removeSubString(sRamTotal, "MemTotal: ");
-    removeSubString(sRamTotal, " kB");
-    removeSubString(sRamFree, "MemFree: ");
-    removeSubString(sRamFree, " kB");
-    removeSubString(sRamBuffers, "Buffers: ");
-    removeSubString(sRamBuffers, " kB");
-    removeSubString(sRamCached, "Cached: ");
-    removeSubString(sRamCached, " kB");
-    removeSubString(sRamSwapCached, "SwapCached: ");
-    removeSubString(sRamSwapCached, " kB");
-
-    ramTotal = stoi(sRamTotal);
-    ramUsed = ramTotal - stoi(sRamFree) - stoi(sRamBuffers) - stoi(sRamCached) - stoi(sRamSwapCached);
-
-    ramUsed = ramUsed / 1024; //To MB
-    ramTotal = ramTotal / 1024;
-    ramUsedInPct = (100 / (double) ramTotal) * ramUsed;
-    ramUsedInPct = ceil(ramUsedInPct * 10) / 10;
 }
 
 void getCpu()
@@ -136,20 +143,21 @@ void getCpu()
     ifstream ifsCpuInfo;
     ifsCpuInfo.open("/proc/cpuinfo");
 
-    if(ifsCpuInfo.is_open())
+    if(!ifsCpuInfo)
+        cerr << "ERROR: Failed open file /proc/cpuinfo." << endl;
+    else
     {
         for(int i = 0; i < 5; i++)
         {
             getline(ifsCpuInfo, cpuName);
         }
-        ifsCpuInfo.close();
-    }
 
-    removeSubString(cpuName, "model name\t: ");
-    removeSubString(cpuName, "(R)"); //For shortest lenght
-    removeSubString(cpuName, "(TM)"); //For shortest lenght
-    removeSubString(cpuName, "@ "); //For shortest lenght
-    removeSubString(cpuName, "CPU "); //For shortest lenght
+        removeSubString(cpuName, "model name\t: ");
+        removeSubString(cpuName, "(R)"); //For shortest lenght
+        removeSubString(cpuName, "(TM)"); //For shortest lenght
+        removeSubString(cpuName, "@ "); //For shortest lenght
+        removeSubString(cpuName, "CPU "); //For shortest lenght
+    }
 }
 
 void getUptime()
@@ -158,48 +166,50 @@ void getUptime()
     string sUptime;
     ifsUptime.open("/proc/uptime");
 
-    if(ifsUptime.is_open())
+    if(!ifsUptime)
+        cerr << "ERROR: Failed open file /proc/uptime." << endl;
+    else
     {
         getline(ifsUptime, sUptime);
-        ifsUptime.close();
-    }
 
-    int uptime;
-    sUptime = sUptime.substr(0, sUptime.find(" "));
-    uptime = stoi(sUptime);
-    uptimeHours = uptime / 3600;
-    uptimeMinutes = (uptime / 60) - (60 * uptimeHours);
+        int uptime;
+        sUptime = sUptime.substr(0, sUptime.find(" "));
+        uptime = stoi(sUptime);
+        uptimeHours = uptime / 3600;
+        uptimeMinutes = (uptime / 60) - (60 * uptimeHours);
+    }
 }
 
 void getOs()
 {
     if(uname(&utsnameBuffer) != 0)
     {
-        cout << "ERROR: Failed uname" << endl;
-        exit(EXIT_FAILURE);
+        cerr << "ERROR: Failed uname" << endl;
     }
-
-    machine = utsnameBuffer.machine;
-    hostname = utsnameBuffer.nodename;
-    kernelReleaseVersion = utsnameBuffer.release;
+    else
+    {
+        machine = utsnameBuffer.machine;
+        hostname = utsnameBuffer.nodename;
+        kernelReleaseVersion = utsnameBuffer.release;
+    }
 }
 
 void getDistro()
 {
-    ifstream ifslsbRelease;
-    ifslsbRelease.open("/etc/lsb-release");
+    ifstream ifsOsRelease;
+    ifsOsRelease.open("/etc/os-release");
 
-    if(ifslsbRelease.is_open())
+    if(!ifsOsRelease)
+        cerr << "ERROR: Failed open file /etc/os-release." << endl;
+    else
     {
-        getline(ifslsbRelease, distroId);
-        getline(ifslsbRelease, distroId);
-        getline(ifslsbRelease, distroName);
-        getline(ifslsbRelease, distroName);
-        ifslsbRelease.close();
+        getline(ifsOsRelease, distroName);
+        getline(ifsOsRelease, distroId);
+
+        removeSubString(distroName, "NAME=\"");
+        removeSubString(distroName, "\"");
+        removeSubString(distroId, "ID=");
     }
-    removeSubString(distroId, "DISTRIB_ID=");
-    removeSubString(distroName, "DISTRIB_DESCRIPTION=\"");
-    removeSubString(distroName, "\"");
 }
 
 void getInfo()
@@ -218,6 +228,7 @@ void writeLogo(logo logo1)
     string bold;
     string blueLightBold;
     string blueLight;
+    string blueDarkBold;
     string yellowBold;
     string offColor;
     string colorUsedRoot;
@@ -229,6 +240,7 @@ void writeLogo(logo logo1)
         bold = "\033[0;1m";
         blueLightBold = "\033[1;36m";
         blueLight = "\033[0;36m";
+        blueDarkBold = "\033[1;34m";
         yellowBold = "\033[1;33m";
         offColor = "\033[0m";
 
@@ -301,7 +313,28 @@ void writeLogo(logo logo1)
                     " `-----------" << bold << ":/.` `.:ohMh" << yellowBold << ":---------`  \n" <<
                     " `-:///::---::" << bold << "+NMMMMNNMMs" << yellowBold << "/:--:/:-.`   \n" <<
                     "   ``-::///+++/" << bold << ":.....--:" << yellowBold << "+oo++/-.``    \n" <<
-                    "         ``````          " << "``````       \n" << offColor << endl;
+                    "         ``````          ``````       \n" << offColor << endl;
+            break;
+        case fedora:
+            cout << bold << '\n' << blueDarkBold <<
+                    "            .:+oyyhhhhyyo+:.          \n"
+                            "         -ohhhhhhhhhhhhhhhhhho-       \n"
+                            "       /yhhhhhhhhhhhhh" << offColor << bold << "ssssss" << blueDarkBold << "oshy/     \n"
+                    "     -yhhhhhhhhhhhhh" << offColor << bold << "sssssssss" << blueDarkBold << " `+hy-   \n"
+                    "    +hhhhhhhhhhhhh" << offColor << bold << "sssss" << blueDarkBold << "hhhho.   -hh+  \n"
+                    "   +hhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhh:   +hh+ \n"
+                    "  -hhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhs   :hhh-\n"
+                    "  shhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhy.   ohhhs\n"
+                    "  hhhhhhhysoyyyyy" << offColor << bold << "ssss" << blueDarkBold << "hhhys/-    +hhhhh\n"
+                    "  hhhhy:`  " << offColor << bold << "/ssssssssssssss." << blueDarkBold << "  `:yhhhhhh\n"
+                    "  hhh/    " << offColor << bold << "./syyyyssssyyyys/" << blueDarkBold << "+shhhhhhhhs\n"
+                    "  hh/   -yhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhhhh-\n"
+                    "  hh`  `hhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhhh+ \n"
+                    "  hh.   yhhhhhhhy" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhh+  \n"
+                    "  hhs   `/yhhhhy" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhy-   \n"
+                    "  hhhs.  " << offColor << bold << "sssssssss" << blueDarkBold << "hhhhhhhhhhhhhy/     \n"
+                    "  shhhhhso" << offColor << bold << "ssssss" << blueDarkBold << "hhhhhhhhhhhhho-       \n"
+                    "  `+yhhhhhhhhhhhhhhhhhyyo+:.          \n" << offColor << endl;
             break;
     }
 }
@@ -316,9 +349,15 @@ void writeInfo()
         case tux:
             writeLogo(tux);
             break;
+        case fedora:
+            writeLogo(fedora);
+            break;
+        case automatic:
         default:
-            if(distroId == "Arch")
+            if(distroId == "arch")
                 writeLogo(archLinux);
+            else if(distroId == "fedora")
+                writeLogo(fedora);
             else
                 writeLogo(tux);
             break;
@@ -338,7 +377,7 @@ void showHelp()
             "OPTIONS:\n"
             "  -c, --no-colors              Turn off colors.\n"
             "  -l[LOGO], --logo[LOGO]       Show another logo.\n"
-            "       LOGO: \"tux\", \"archlinux\"\n\n"
+            "       LOGO: \"tux\", \"archlinux\", \"fedora\"\n\n"
             "  -h, --help                   Show this help.\n"
             "  -v, --version                Show version." << endl;
 }
@@ -362,37 +401,30 @@ int main(int argc, char *argv[])
                 if(argv[i] == string("-h") || argv[i] == string("--h") ||
                         argv[i] == string("-help") || argv[i] == string("--help"))
                     showHelp();
-                else
+                else if(argv[i] == string("-v") || argv[i] == string("--version"))
+                    showVersion();
+                else if(argv[i] == string("-c") || argv[i] == string("--no-colors"))
                 {
-                    if(argv[i] == string("-v") || argv[i] == string("--version"))
-                        showVersion();
-                    else
-                    {
-                        if(argv[i] == string("-c") || argv[i] == string("--no-colors"))
-                        {
-                            colors = false;
-                            print = true;
-                        }
-                        else
-                        {
-                            if(argv[i] == string("-logo[archlinux]") || argv[i] == string("-l[archlinux]"))
-                            {
-                                logoSelected = archLinux;
-                                print = true;
-                            }
-                            else
-                            {
-                                if(argv[i] == string("-logo[tux]") || argv[i] == string("-l[tux]"))
-                                {
-                                    logoSelected = tux;
-                                    print = true;
-                                }
-                                else
-                                    showHelp();
-                            }
-                        }
-                    }
+                    colors = false;
+                    print = true;
                 }
+                else if(argv[i] == string("-logo[archlinux]") || argv[i] == string("-l[archlinux]"))
+                {
+                    logoSelected = archLinux;
+                    print = true;
+                }
+                else if(argv[i] == string("-logo[tux]") || argv[i] == string("-l[tux]"))
+                {
+                    logoSelected = tux;
+                    print = true;
+                }
+                else if(argv[i] == string("-logo[fedora]") || argv[i] == string("-l[fedora]"))
+                {
+                    logoSelected = fedora;
+                    print = true;
+                }
+                else
+                    showHelp();
             }
             break;
         case 1:

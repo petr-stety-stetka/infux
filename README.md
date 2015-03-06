@@ -1,15 +1,14 @@
 #infux
 
 Is information program for linux, writen in C++ (very fast). <br>
-Output can colored or nocolored.
+Output can colored or nocolored. Logo will be selected automatically according to the distribution (or manually).<br>
 Supports this logos: archlinux, tux (yet).<br>
-Size of logos is 38.
 
 ##Screenshots:
 <img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-arch.png" width="500px" /> <img src="https://github.com/petr-stety-stetka/infux/blob/master/screenshots/screenshot-tux.png" width="500px" />
 
 ##Dependencies:
-lsb-release
+File /etc/os-release (default exist on systemd systems).
 
 ##TODO:
 Add more logos:
