@@ -16,7 +16,7 @@ File /etc/os-release (default exist on systemd systems).
 cmake CMakeLists.txt
 
 ##Usage
-infux [OPTIONS] (or ./infux)
+infux [[OPTIONS]] (or ./infux)
 OPTIONS:
   -c, --no-colors              Turn off colors.
   -l[LOGO], --logo[LOGO]       Show another logo.
