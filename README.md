@@ -5,7 +5,9 @@ Output can colored or nocolored. Logo will be selected automatically according t
 Supports this logos: archlinux, tux, Fedora (yet).<br>
 
 ##Screenshots:
-<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-arch.png" width="500px" /> <img src="https://github.com/petr-stety-stetka/infux/blob/master/screenshots/screenshot-tux.png" width="500px" />
+<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-arch.png" width="500px" /> 
+<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-tux.png" width="500px" /> 
+<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-fedora.png" width="500px" /> 
 
 ##Dependencies:
 File /etc/os-release (default exist on systemd systems).
