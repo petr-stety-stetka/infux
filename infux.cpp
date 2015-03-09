@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION "0.4.9"
+#define VERSION "0.5.0"
 
 using namespace std;
 
@@ -203,8 +203,21 @@ void getDistro()
         cerr << "ERROR: Failed open file /etc/os-release." << endl;
     else
     {
-        getline(ifsOsRelease, distroName);
-        getline(ifsOsRelease, distroId);
+        string line;
+        bool findDistroName = true;
+        while(ifsOsRelease)
+        {
+            getline(ifsOsRelease, line);
+            if(line.find("NAME=") != string::npos && findDistroName)
+            {
+                distroName = line;
+                findDistroName = false;
+            }
+            else if(line.find("ID=") != string::npos)
+            {
+                distroId = line;
+            }
+        }
 
         removeSubString(distroName, "NAME=\"");
         removeSubString(distroName, "\"");
@@ -317,23 +330,23 @@ void writeLogo(logo logo1)
             break;
         case fedora:
             cout << bold << '\n' << blueDarkBold <<
-                    "            .:+oyyhhhhyyo+:.          \n"
-                            "         -ohhhhhhhhhhhhhhhhhho-       \n"
-                            "       /yhhhhhhhhhhhhh" << offColor << bold << "ssssss" << blueDarkBold << "oshy/     \n"
-                    "     -yhhhhhhhhhhhhh" << offColor << bold << "sssssssss" << blueDarkBold << " `+hy-   \n"
-                    "    +hhhhhhhhhhhhh" << offColor << bold << "sssss" << blueDarkBold << "hhhho.   -hh+  \n"
-                    "   +hhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhh:   +hh+ \n"
-                    "  -hhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhs   :hhh-\n"
-                    "  shhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhy.   ohhhs\n"
-                    "  hhhhhhhysoyyyyy" << offColor << bold << "ssss" << blueDarkBold << "hhhys/-    +hhhhh\n"
-                    "  hhhhy:`  " << offColor << bold << "/ssssssssssssss." << blueDarkBold << "  `:yhhhhhh\n"
-                    "  hhh/    " << offColor << bold << "./syyyyssssyyyys/" << blueDarkBold << "+shhhhhhhhs\n"
-                    "  hh/   -yhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhhhh-\n"
-                    "  hh`  `hhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhhh+ \n"
-                    "  hh.   yhhhhhhhy" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhh+  \n"
-                    "  hhs   `/yhhhhy" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhy-   \n"
-                    "  hhhs.  " << offColor << bold << "sssssssss" << blueDarkBold << "hhhhhhhhhhhhhy/     \n"
-                    "  shhhhhso" << offColor << bold << "ssssss" << blueDarkBold << "hhhhhhhhhhhhho-       \n"
+                    "            .:+oyyhhhhyyo+:.             \n"
+                            "         -ohhhhhhhhhhhhhhhhhho-          " << "Hello,\n" <<
+                    "       /yhhhhhhhhhhhhh" << offColor << bold << "ssssss" << blueDarkBold << "oshy/        " << "I'am " << distroName << ", best OS ever.\n" <<
+                    "     -yhhhhhhhhhhhhh" << offColor << bold << "sssssssss" << blueDarkBold << " `+hy-      \n"
+                    "    +hhhhhhhhhhhhh" << offColor << bold << "sssss" << blueDarkBold << "hhhho.   -hh+     " << "OS: " << offColor << distroName << " " << machine << '\n' << blueDarkBold <<
+                    "   +hhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhh:   +hh+    " << "Hostname: " << offColor << hostname << '\n' << blueDarkBold <<
+                    "  -hhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhs   :hhh-   " << "Kernel Release: " << offColor << kernelReleaseVersion << '\n' << blueDarkBold <<
+                    "  shhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhy.   ohhhs   \n"
+                    "  hhhhhhhysoyyyyy" << offColor << bold << "ssss" << blueDarkBold << "hhhys/-    +hhhhh   " << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << blueDarkBold <<
+                    "  hhhhy:`  " << offColor << bold << "/ssssssssssssss." << blueDarkBold << "  `:yhhhhhh   " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << blueDarkBold <<
+                    "  hhh/    " << offColor << bold << "./syyyyssssyyyys/" << blueDarkBold << "+shhhhhhhhs   " << "CPU: " << offColor << cpuName << '\n' << blueDarkBold <<
+                    "  hh/   -yhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhhhh-   \n"
+                    "  hh`  `hhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhhh+    " << "Root: " << colorUsedRoot << memoryUsedRoot << "GB" << offColor << " / " << memoryTotalRoot << "GB (" << memoryUsedRootInPct << "%)\n" << blueDarkBold <<
+                    "  hh.   yhhhhhhhy" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhh+     " << "Home: " << colorUsedHome << memoryUsedHome << "GB" << offColor << " / " << memoryTotalHome << "GB (" << memoryUsedHomeInPct << "%)\n" << blueDarkBold <<
+                    "  hhs   `/yhhhhy" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhhhhhhy-      \n"
+                    "  hhhs.  " << offColor << bold << "sssssssss" << blueDarkBold << "hhhhhhhhhhhhhy/        \n"
+                    "  shhhhhso" << offColor << bold << "ssssss" << blueDarkBold << "hhhhhhhhhhhhho-          \n"
                     "  `+yhhhhhhhhhhhhhhhhhyyo+:.          \n" << offColor << endl;
             break;
     }
@@ -356,7 +369,7 @@ void writeInfo()
         default:
             if(distroId == "arch")
                 writeLogo(archLinux);
-            else if(distroId == "fedora")
+            else if(distroId == "Fedora")
                 writeLogo(fedora);
             else
                 writeLogo(tux);
