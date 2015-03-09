@@ -18,11 +18,11 @@ cmake CMakeLists.txt
 ##Usage
 infux \[OPTIONS\] (or ./infux) <br><br>
 **OPTIONS:**<br>
-&nbsp;&nbsp;&nbsp;*-c, --no-colors*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Turn off colors.<br>
+&nbsp;&nbsp;&nbsp;*-c, --no-colors*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Turn off colors.<br>
 &nbsp;&nbsp;&nbsp;*-l[LOGO], --logo[LOGO]*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show another logo.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*LOGO: "tux", "archlinux", "fedora"*<br><br>
 
-&nbsp;&nbsp;&nbsp;*-h, --help*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show this help.<br>
+&nbsp;&nbsp;&nbsp;*-h, --help*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show this help.<br>
 &nbsp;&nbsp;&nbsp;*-v, --version*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version.<br>
 
 ##TODO:
