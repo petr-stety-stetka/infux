@@ -12,10 +12,24 @@ Supports this logos: archlinux, tux, Fedora (yet).<br>
 ##Dependencies:
 File /etc/os-release (default exist on systemd systems).
 
+##Compilation:
+cmake CMakeLists.txt
+
+##Usage
+infux [OPTIONS] (or ./infux)
+OPTIONS:
+  -c, --no-colors              Turn off colors.
+  -l[LOGO], --logo[LOGO]       Show another logo.
+       LOGO: "tux", "archlinux", "fedora"
+
+  -h, --help                   Show this help.
+  -v, --version                Show version.
+
 ##TODO:
 Add more logos:
 - [ ] Ubuntu
-- [ ] Other?
+- [ ] Other logo?
+- [ ] makefile
 
 #License 
 Code is under GNU GPLv3 license.
