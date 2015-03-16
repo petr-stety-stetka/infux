@@ -5,7 +5,7 @@
 #include <math.h>
 
 #define GB (1024*1024*1024)
-#define VERSION "0.5.0"
+#define VERSION "0.5.1"
 
 using namespace std;
 
@@ -60,7 +60,8 @@ void writeLogo(logo logo1);
 void writeInfo();
 void showVersion();
 void showHelp();
-void removeSubString(string &sInput, const string &subString);
+
+bool removeSubString(string &sInput, const string &subString);
 
 void getSpaceHome()
 {
@@ -204,23 +205,24 @@ void getDistro()
     else
     {
         string line;
-        bool findDistroName = true;
+        bool IdFound = false;
         while(ifsOsRelease)
         {
             getline(ifsOsRelease, line);
-            if(line.find("NAME=") != string::npos && findDistroName)
+            if(line.find("PRETTY_NAME=") != string::npos)
             {
                 distroName = line;
-                findDistroName = false;
             }
-            else if(line.find("ID=") != string::npos)
+            else if(line.find("ID=") != string::npos && !IdFound)
             {
                 distroId = line;
+                IdFound = true;
             }
         }
 
-        removeSubString(distroName, "NAME=\"");
-        removeSubString(distroName, "\"");
+        removeSubString(distroName, "PRETTY_NAME=");
+        if(removeSubString(distroName, "\"")) //Because " are two (if exist)
+            removeSubString(distroName, "\"");
         removeSubString(distroId, "ID=");
     }
 }
@@ -290,7 +292,7 @@ void writeLogo(logo logo1)
                     "                /ssss/                  \n" <<
                     "               :ssssss/                 " << blueLightBold << "OS: " << offColor << distroName << " " << machine << '\n' << blueLightBold <<
                     "              .ssssssss:                " << blueLightBold << "Hostname: " << offColor << hostname << '\n' << blueLightBold <<
-                    "             -+:/sssssss:               " << blueLightBold << "Kernel Release: " << offColor << kernelReleaseVersion << '\n' << blueLightBold <<
+                    "             -+:/sssssss:               " << blueLightBold << "Kernel: " << offColor << kernelReleaseVersion << '\n' << blueLightBold <<
                     "            -sss" << blueLight << "+ARCH+" << blueLightBold << "sss:              \n" <<
                     "           -ssssssssssssss:             " << blueLightBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << blueLightBold <<
                     "          :ssss" << blueLight << "+LINUX+" << blueLightBold << "sssss:            " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << blueLight <<
@@ -312,7 +314,7 @@ void writeLogo(logo logo1)
                     "             ho' 'bnd' 'Mo            \n" <<
                     "             ys " << offColor << "." << bold << " mnm " << offColor << "." << bold << " Mo            " << yellowBold << "OS: " << offColor << distroName << " " << machine << '\n' << bold <<
                     "             os" << yellowBold << "::::-::" << bold << "dMMm            " << yellowBold << "Hostname: " << offColor << hostname << '\n' << bold <<
-                    "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel Release: " << offColor << kernelReleaseVersion << '\n' << bold <<
+                    "             +" << yellowBold << "y+////:-sM" << bold << "dmy           " << yellowBold << "Kernel: " << offColor << kernelReleaseVersion << '\n' << bold <<
                     "            /m-" << yellowBold << "`:/-`" << bold << "   oMMMh`         \n" <<
                     "          `hN.          hMMMN:        " << yellowBold << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << bold <<
                     "         .NMo.          :mMNMMo       " << yellowBold << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << bold <<
@@ -336,7 +338,7 @@ void writeLogo(logo logo1)
                     "     -yhhhhhhhhhhhhh" << offColor << bold << "sssssssss" << blueDarkBold << " `+hy-      \n"
                     "    +hhhhhhhhhhhhh" << offColor << bold << "sssss" << blueDarkBold << "hhhho.   -hh+     " << "OS: " << offColor << distroName << " " << machine << '\n' << blueDarkBold <<
                     "   +hhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhh:   +hh+    " << "Hostname: " << offColor << hostname << '\n' << blueDarkBold <<
-                    "  -hhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhs   :hhh-   " << "Kernel Release: " << offColor << kernelReleaseVersion << '\n' << blueDarkBold <<
+                    "  -hhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhhs   :hhh-   " << "Kernel: " << offColor << kernelReleaseVersion << '\n' << blueDarkBold <<
                     "  shhhhhhhhhhhhhh" << offColor << bold << "ssss" << blueDarkBold << "hhhhhhhy.   ohhhs   \n"
                     "  hhhhhhhysoyyyyy" << offColor << bold << "ssss" << blueDarkBold << "hhhys/-    +hhhhh   " << "Uptime: " << offColor << uptimeHours << "h " << uptimeMinutes << "m\n" << blueDarkBold <<
                     "  hhhhy:`  " << offColor << bold << "/ssssssssssssss." << blueDarkBold << "  `:yhhhhhh   " << "RAM: " << colorRamUsed << ramUsed << "MB" << offColor << " / " << ramTotal << " MB (" << ramUsedInPct << "%)\n" << blueDarkBold <<
@@ -369,7 +371,7 @@ void writeInfo()
         default:
             if(distroId == "arch")
                 writeLogo(archLinux);
-            else if(distroId == "Fedora")
+            else if(distroId == "fedora")
                 writeLogo(fedora);
             else
                 writeLogo(tux);
@@ -395,11 +397,19 @@ void showHelp()
             "  -v, --version                Show version." << endl;
 }
 
-void removeSubString(string &sInput, const string &subString)
+/**
+* Return true if sub string was found and deleted, else false.
+*/
+bool removeSubString(string &sInput, const string &subString)
 {
     string::size_type foundpos = sInput.find(subString);
     if(foundpos != string::npos)
+    {
         sInput.erase(sInput.begin() + foundpos, sInput.begin() + foundpos + subString.length());
+        return true;
+    }
+    else
+        return false;
 }
 
 int main(int argc, char *argv[])
