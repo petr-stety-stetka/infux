@@ -1,6 +1,6 @@
 #infux
 
-**Is program for display info about system** (Screenshot Information Tool), writen in C++ (so is very fast). <br>
+**infux is program for display info about system** (Screenshot Information Tool), writen in C++ (so is very fast). <br>
 Output can colored(default) or nocolored. Logo will be selected automatically according to the distribution (or manually).<br><br>
 **Displays the following information:**
 - Operating system - distribution
@@ -34,7 +34,7 @@ infux \[OPTIONS\] <br><br>
 **OPTIONS:**<br>
 >**-c, --colors-off** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Turn off colors.<br>
 >**-l[LOGO], --logo[LOGO]** &nbsp;&nbsp;&nbsp;Show another logo, for ex.: -l[tux]<br>
->**-h, --help** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show this help.<br>
+>**-h, --help** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show help.<br>
 >**-v, --version** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version of program.
 
 ##TODO:
