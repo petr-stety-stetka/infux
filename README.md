@@ -1,7 +1,21 @@
 #infux
 
 **Is program for display info about system** (Screenshot Information Tool), writen in C++ (so is very fast). <br>
-Output can colored(default) or nocolored. Logo will be selected automatically according to the distribution (or manually).<br>
+Output can colored(default) or nocolored. Logo will be selected automatically according to the distribution (or manually).<br><br>
+**Displays the following information:**
+- Operating system - distribution
+- Kernel version
+- Shell
+- Number packages
+- Desktop Environment
+- CPU
+- GPU
+- OpenGL version
+- Resolution display
+- RAM - used/all (and used in percentages)
+- Root partition - used/all (and used in percentages)
+- Home partition - used/all (and used in percentages)<br><br>
+
 **Supports this logos:** Arch-Linux, Debian, Fedora, GNOME, GNOME-circle, KDE, Linux-Mint, Linux-Mint-2, nothing, RHEL, tux, Ubuntu (yet).<br>
 
 ##Screenshots:
@@ -24,21 +38,21 @@ infux \[OPTIONS\] <br><br>
 >**-v, --version** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version of program.
 
 ##TODO:
-**version 0.7:**<br>
-- [ ] Shell info
-- [ ] Resolution info
-- [ ] DE info
-- [ ] Packages info<br>
+- [ ] **version 0.7:**<br>
+  - [ ] Shell info
+  - [ ] Resolution info
+  - [ ] DE info
+  - [ ] Packages info<br>
 
-**version 0.8:**<br>
-- [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as emergency solutions?)<br>
+- [ ] **version 0.8:**<br>
+  - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as emergency solutions?)<br>
 
-**version 0.9:**<br>
-- [ ] Packages: DEB, RPM...<br>
+- [ ] **version 0.9:**<br>
+  - [ ] Packages: DEB, RPM...<br>
 
-**version 1.0:**<br>
-- [ ] Resize all logos to same size
-- [ ] Next logos?
+- [ ] **version 1.0:**<br>
+  - [ ] Resize all logos to same size
+  - [ ] Next logos?
 
 ##Version
 Actual version is 0.6.0.
