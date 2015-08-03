@@ -24,15 +24,18 @@ infux \[OPTIONS\] <br><br>
 >**-v, --version** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version of program.
 
 ##TODO:
-**version 0.7:**
+**version 0.7:**<br>
 - [ ] Shell info
 - [ ] Resolution info
 - [ ] DE info
-- [ ] Packages info<br>
+- [ ] Packages info<br>.
+
 **version 0.8:**<br>
 - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as emergency solutions?)<br>
+
 **version 0.9:**<br>
 - [ ] Packages: DEB, RPM...<br>
+
 **version 1.0:**<br>
 - [ ] Resize all logos to same size
 - [ ] Next logos?
