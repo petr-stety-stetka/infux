@@ -28,7 +28,7 @@ infux \[OPTIONS\] <br><br>
 - [ ] Shell info
 - [ ] Resolution info
 - [ ] DE info
-- [ ] Packages info<br>.
+- [ ] Packages info<br>
 
 **version 0.8:**<br>
 - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as emergency solutions?)<br>
