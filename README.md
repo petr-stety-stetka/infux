@@ -45,7 +45,7 @@ infux \[OPTIONS\] <br><br>
   - [ ] Packages info<br>
 
 - [ ] **version 0.8:**<br>
-  - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as emergency solutions?)<br>
+  - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as fallback solutions?)<br>
 
 - [ ] **version 0.9:**<br>
   - [ ] Packages: DEB, RPM...<br>
