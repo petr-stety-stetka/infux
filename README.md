@@ -16,7 +16,7 @@ Output can colored(default) or nocolored. Logo will be selected automatically ac
 - Root partition - used/all (and used in percentages)
 - Home partition - used/all (and used in percentages)<br><br>
 
-**Supports this logos:** Arch-Linux, Debian, Fedora, GNOME, GNOME-circle, KDE, Linux-Mint, Linux-Mint-2, nothing, RHEL, tux, Ubuntu (yet).<br>
+**Supports this logos:** Arch-Linux, Debian, Fedora, GNOME, GNOME-circle, KDE, Linux-Mint, Linux-Mint-2, nothing, openSUSE, RHEL, tux, Ubuntu (yet).<br>
 
 ##Screenshots:
 <img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-ubuntu-0.6.png" width="500px" /> 
@@ -24,7 +24,8 @@ Output can colored(default) or nocolored. Logo will be selected automatically ac
 <img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-fedora-0.5.png" width="500px" /> 
 
 ##Dependencies:
-File /etc/os-release (default exist on systemd systems).
+File /etc/os-release (default exist on systemd systems).<br>
+For detect GPU and OpenGL you must have installed mesa-utils package.
 
 ##Compilation:
 cmake CMakeLists.txt
@@ -38,11 +39,11 @@ infux \[OPTIONS\] <br><br>
 >**-v, --version** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version of program.
 
 ##TODO:
-- [ ] **version 0.7:**<br>
-  - [ ] Shell info
-  - [ ] Resolution info
-  - [ ] DE info
-  - [ ] Packages info<br>
+- [x] **version 0.7:**<br>
+  - [x] Shell info
+  - [x] Resolution info
+  - [x] DE info
+  - [x] Packages info<br>
 
 - [ ] **version 0.8:**<br>
   - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as fallback solutions?)<br>

@@ -14,9 +14,8 @@ private:
     string offAll;
     bool color;
 
-    void colorUpUsed(string &strUsed, string strUsedInPercentages);
+    void colorupUsed(string &strUsed, string &strUsedInPercentages);
 
-    Reader::Distro &distro;
     Reader::OS &OS;
     Reader::RAM &RAM;
     Reader::CPU &CPU;
@@ -25,31 +24,38 @@ private:
     Reader::HDD &HDDHome;
     Reader::Uptime &uptime;
 public:
-    Logos(Reader::Distro &distro, Reader::OS &OS, Reader::RAM &RAM, Reader::CPU &CPU, Reader::GPU &GPU,
+    Logos(Reader::OS &OS, Reader::RAM &RAM, Reader::CPU &CPU, Reader::GPU &GPU,
           Reader::HDD &HDDRoot,
           Reader::HDD &HDDHome, Reader::Uptime &uptime, bool &color);
 
+    enum class logos {
+        arch,
+        debian,
+        fedora,
+        gnome,
+        gnomeCircle,
+        kde,
+        linuxMint,
+        linuxMint2,
+        nothing,
+        openSuse,
+        rhel,
+        ubuntu,
+        tux
+    };
+
     void arch();
-
     void fedora();
-
     void debian();
-
     void gnome();
-
     void gnomeCircle();
-
     void kde();
-
     void linuxMint();
-
     void linuxMint2();
-
     void nothing();
 
+    void openSuse();
     void rhel();
-
     void tux();
-
     void ubuntu();
 };

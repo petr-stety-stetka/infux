@@ -1,10 +1,10 @@
 #include <iostream>
 #include "Logos.h"
 
-Logos::Logos(Reader::Distro &distro, Reader::OS &OS, Reader::RAM &RAM, Reader::CPU &CPU, Reader::GPU &GPU,
+Logos::Logos(Reader::OS &OS, Reader::RAM &RAM, Reader::CPU &CPU, Reader::GPU &GPU,
              Reader::HDD &HDDRoot,
              Reader::HDD &HDDHome, Reader::Uptime &uptime, bool &color)
-        : distro(distro), OS(OS), RAM(RAM), CPU(CPU), GPU(GPU), HDDRoot(HDDRoot), HDDHome(HDDHome), uptime(uptime) {
+        : OS(OS), RAM(RAM), CPU(CPU), GPU(GPU), HDDRoot(HDDRoot), HDDHome(HDDHome), uptime(uptime) {
     Logos::color = color;
     if (color) {
         bold = "\033[1m";
@@ -13,13 +13,13 @@ Logos::Logos(Reader::Distro &distro, Reader::OS &OS, Reader::RAM &RAM, Reader::C
         yellow = "\033[33m";
         offAll = "\033[0m";
 
-        colorUpUsed(HDDRoot.used, HDDRoot.usedInPercentages);
-        colorUpUsed(HDDHome.used, HDDHome.usedInPercentages);
-        colorUpUsed(RAM.used, RAM.usedInPercentages);
+        colorupUsed(HDDRoot.used, HDDRoot.usedInPercentages);
+        colorupUsed(HDDHome.used, HDDHome.usedInPercentages);
+        colorupUsed(RAM.used, RAM.usedInPercentages);
     }
 }
 
-void Logos::colorUpUsed(string &strUsed, string strUsedInPercentages) {
+void Logos::colorupUsed(string &strUsed, string &strUsedInPercentages) {
     string color;
     strUsedInPercentages.erase(strUsedInPercentages.length() - 1);
     if (stoi(strUsedInPercentages) < 50)
@@ -39,23 +39,27 @@ void Logos::arch() {
     }
 
     cout << bold << lightBlue << '\n' <<
-    "                  ..                    " << bold << "OS: " << offAll << distro.name << " " << OS.architecture <<
+            "                  ..                    " << bold << "OS: " << offAll << OS.distroName << " " <<
+            OS.architecture <<
     '\n' << lightBlue << bold <<
     "                 `ss`                   \n" <<
     "                 :ss:                   " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
     lightBlue <<
     "                :ssss:                  " << "Uptime: " << offAll << uptime.uptime << '\n' << bold << lightBlue <<
     "               :ssssss:                 \n" <<
-    "              :ssssssss:                " << "Shell: " << offAll << '\n' << bold << lightBlue <<
-    "             :ssssssssss:               " << "Packages: " << offAll << '\n' << bold << lightBlue <<
+            "              :ssssssss:                " << "Shell: " << offAll << OS.shell << '\n' << bold <<
+            lightBlue <<
+            "             :ssssssssss:               " << "Packages: " << offAll << OS.packages << '\n' << bold <<
+            lightBlue <<
     "            :ssssssssssss:              \n" <<
-    "           :ssssssssssssss:             " << "DE: " << offAll << '\n' << bold << lightBlue <<
+            "           :ssssssssssssss:             " << "DE: " << offAll << OS.DE << '\n' << bold << lightBlue <<
     "          :ssssssssssssssss:            " << "CPU: " << offAll << CPU.CPU << '\n' << lightBlue <<
     "         " << bold << lightBlue << ":s" << offAll << lightBlue << "ssssssssssssssss" << bold << lightBlue <<
     "s:           \n" << offAll << lightBlue <<
     "        :sssssss+.  .+sssssss:          " << bold << "GPU: " << offAll << GPU.GPU << '\n' << lightBlue <<
     "       :sssssss+      +sssssss:         " << bold << "OpenGL: " << offAll << GPU.GLVersion << '\n' << lightBlue <<
-    "      :ssssssss`      `ssssssss:        " << bold << "Resolution: " << offAll << '\n' << lightBlue <<
+            "      :ssssssss`      `ssssssss:        " << bold << "Resolution: " << offAll << GPU.resolution << '\n' <<
+            lightBlue <<
     "     :sssssssss        sssssssss:       \n" <<
     "   .:ssssssss/:        :\\ssssssss:.     " << bold << "RAM: " << RAM.used << offAll << " / " << RAM.total <<
     " (" << RAM.usedInPercentages << ")\n" << offAll << lightBlue <<
@@ -71,7 +75,8 @@ void Logos::fedora() {
         string darkBlue = "\033[34m";
 
         cout << '\n' << bold << darkBlue <<
-        "            .nnnnnhhhhnnnnn.             " << "OS: " << offAll << distro.name << " " << OS.architecture <<
+                "            .nnnnnhhhhnnnnn.             " << "OS: " << offAll << OS.distroName << " " <<
+                OS.architecture <<
         '\n' << bold << darkBlue <<
         "         .nhhhhhhhhhhhhhhhhhhn.          \n" <<
         "       .hhhhhhhhhhhhhh" << offAll << bold << "ssssss" << bold << darkBlue << "hhhh.        " << "Kernel: " <<
@@ -80,12 +85,12 @@ void Logos::fedora() {
         offAll << uptime.uptime << '\n' << bold << darkBlue <<
         "    .hhhhhhhhhhhhh" << offAll << bold << "sssss" << bold << darkBlue << "hhhhh.   hhh.     \n" <<
         "   .hhhhhhhhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhhh.   hhh.    " << "Shell: " <<
-        offAll << '\n' << bold << darkBlue <<
+                offAll << OS.shell << '\n' << bold << darkBlue <<
         "  .hhhhhhhhhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhhhh   hhhh.   " << "Packages: " <<
-        offAll << '\n' << bold << darkBlue <<
+                offAll << OS.packages << '\n' << bold << darkBlue <<
         "  hhhhhhhhhhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhhh`   hhhhh   \n" <<
         "  hhhhhhhhhhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhh    hhhhhh   " << "DE: " <<
-        offAll << '\n' << bold << darkBlue <<
+                offAll << OS.DE << '\n' << bold << darkBlue <<
         "  hhhhhh`  " << offAll << bold << " ssssssssssssss " << bold << darkBlue << "   .nhhhhhh   " << "CPU: " <<
         offAll << CPU.CPU << '\n' << bold << darkBlue <<
         "  hhh`     " << offAll << bold << " ssssssssssssss " << bold << darkBlue << " .nhhhhhhhh   \n" <<
@@ -94,7 +99,7 @@ void Logos::fedora() {
         "  hh`  -hhhhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhhhhhhhhhh`    " << "OpenGL: " <<
         offAll << GPU.GLVersion << '\n' << bold << darkBlue <<
         "  hh.   hhhhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhhhhhhhhh`     " <<
-        "Resolution: " << offAll << '\n' << bold << darkBlue <<
+                "Resolution: " << offAll << GPU.resolution << '\n' << bold << darkBlue <<
         "  hhh   `hhhhhhh" << offAll << bold << "ssss" << bold << darkBlue << "hhhhhhhhhhhhhh`      \n" <<
         "  hhhh.  " << offAll << bold << "sssssssss" << bold << darkBlue << "hhhhhhhhhhhhhh`        " << "RAM: " <<
         RAM.used << offAll << " / " << RAM.total << " (" << RAM.usedInPercentages << ")\n" << bold << darkBlue <<
@@ -106,20 +111,21 @@ void Logos::fedora() {
     }
     else {
         cout << '\n' <<
-        "           .nnnnnhhhhnnnnn.             " << "OS: " << distro.name << " " << OS.architecture << '\n' <<
+                "           .nnnnnhhhhnnnnn.             " << "OS: " << OS.distroName << " " << OS.architecture <<
+                '\n' <<
         "        .nhhhhhhhhhhhhhhhhhhn.          \n" <<
         "      .hhhhhhhhhhhhhh      hhhh.        " << "Kernel: " << OS.kernelVersion << '\n' <<
         "    .yhhhhhhhhhhhhh         sshhh.      " << "Uptime: " << uptime.uptime << '\n' <<
         "   .hhhhhhhhhhhhh     hhhhhsssshhh.     \n" <<
-        "  .hhhhhhhhhhhhh    hhhhhhhhsssshhh.    " << "Shell: " << '\n' <<
-        " .hhhhhhhhhhhhhh    hhhhhhhhhssshhhh.   " << "Packages: " << '\n' <<
+                "  .hhhhhhhhhhhhh    hhhhhhhhsssshhh.    " << "Shell: " << OS.shell << '\n' <<
+                " .hhhhhhhhhhhhhh    hhhhhhhhhssshhhh.   " << "Packages: " << OS.packages << '\n' <<
         " hhhhhhhhhhhhhhh    hhhhhhhhsssshhhhh   \n" <<
-        " hhhhhhhhhhhhhhh    hhhhhhhsssshhhhhh   " << "DE: " << '\n' <<
+                " hhhhhhhhhhhhhhh    hhhhhhhsssshhhhhh   " << "DE: " << OS.DE << '\n' <<
         " hhhhhhssss              sssssnhhhhhh   " << "CPU: " << CPU.CPU << '\n' <<
         " hhhsssssss              sssnhhhhhhhh   \n" <<
         " hhsssshhhhhhhhh    hhhhhhhhhhhhhhhh`   " << "GPU: " << GPU.GPU << '\n' <<
         " hhsssshhhhhhhhh    hhhhhhhhhhhhhhh`    " << "OpenGL: " << GPU.GLVersion << '\n' <<
-        " hhsssshhhhhhhhh    hhhhhhhhhhhhhh`     " << "Resolution: " << '\n' <<
+                " hhsssshhhhhhhhh    hhhhhhhhhhhhhh`     " << "Resolution: " << GPU.resolution << '\n' <<
         " hhhsssshhhhhhh    hhhhhhhhhhhhhh`      \n" <<
         " hhhhsss         hhhhhhhhhhhhhh`        " << "RAM: " << RAM.used << " / " << RAM.total << " (" <<
         RAM.usedInPercentages << ")\n" <<
@@ -137,21 +143,24 @@ void Logos::debian() {
 
     cout << '\n' << pink << bold <<
     "               ..........              \n" <<
-    "           .:ssssssssssssss:.          " << "OS: " << offAll << distro.name << " " << OS.architecture << '\n' <<
+            "           .:ssssssssssssss:.          " << "OS: " << offAll << OS.distroName << " " << OS.architecture <<
+            '\n' <<
     bold << pink <<
     "        .:ssssssssssssssssssss:.       \n" <<
     "       .ssssss`           `sssss.      " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold << pink <<
     "      sssss`                `sssss.    " << "Uptime: " << offAll << uptime.uptime << '\n' << bold << pink <<
     "    .sss`                     `sss:    \n" <<
-    "   .sss          .sssss:.      sss:    " << "Shell: " << offAll << '\n' << bold << pink <<
-    "   sss`         ss             sss:    " << "Packages: " << offAll << '\n' << bold << pink <<
+            "   .sss          .sssss:.      sss:    " << "Shell: " << offAll << OS.shell << '\n' << bold << pink <<
+            "   sss`         ss             sss:    " << "Packages: " << offAll << OS.packages << '\n' << bold <<
+            pink <<
     "   ss:         ss         `    sss`    \n" <<
-    "   ss:         ss              ss`     " << "DE: " << offAll << '\n' << bold << pink <<
+            "   ss:         ss              ss`     " << "DE: " << offAll << OS.DE << '\n' << bold << pink <<
     "   ss:         ss        `    ss`      " << "CPU: " << offAll << CPU.CPU << '\n' << bold << pink <<
     "   ss:         `ss.   ``    .ss`       \n" <<
     "   sss.         `sss:....ssss`         " << "GPU: " << offAll << GPU.GPU << '\n' << bold << pink <<
     "   `sss.          `ssssss:`            " << "OpenGL: " << offAll << GPU.GLVersion << '\n' << bold << pink <<
-    "    `sss.                              " << "Resolution: " << offAll << '\n' << bold << pink <<
+            "    `sss.                              " << "Resolution: " << offAll << GPU.resolution << '\n' << bold <<
+            pink <<
     "     `sss.                             \n" <<
     "      `sss.                            " << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" <<
     RAM.usedInPercentages << ")\n" << bold << pink <<
@@ -164,76 +173,77 @@ void Logos::debian() {
 }
 
 void Logos::gnome() {
-    cout << '\n' <<
-    "                 .-.      .NMMMMM.    " << bold << "OS: " << offAll << distro.name << " " << OS.architecture <<
+    cout << '\n' << bold <<
+    "                 .-.      .NMMMMM.    " << "OS: " << offAll << OS.distroName << " " << OS.architecture << bold <<
     '\n' <<
     "                .MMM.   .NMMMMMMMN    \n" <<
-    "         .mm.  :MMMMN  .NMMMMMMMM`    " << bold << "Kernel: " << offAll << OS.kernelVersion << '\n' <<
-    "        .MMMM. .MMMM`  .MMMMMMMm`     " << bold << "Uptime: " << offAll << uptime.uptime << '\n' <<
+    "         .mm.  :MMMMN  .NMMMMMMMM`    " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
+    "        .MMMM. .MMMM`  .MMMMMMMm`     " << "Uptime: " << offAll << uptime.uptime << '\n' << bold <<
     "    .:.  NMMM`  `NN`   `MMMMMMN`      \n" <<
-    "   .MMM: `NN`           `MMMN`        " << bold << "Shell: " << offAll << '\n' <<
-    "   `NMMM       .NMMMMMMMMN.           " << bold << "Packages: " << offAll << '\n' <<
+    "   .MMM: `NN`           `MMMN`        " << "Shell: " << offAll << OS.shell << '\n' << bold <<
+    "   `NMMM       .NMMMMMMMMN.           " << "Packages: " << offAll << OS.packages << '\n' << bold <<
     "    `NN`   .NMMMMMMMMMMMMMMy.         \n" <<
-    "        .NMMMMMMMMMMMMMMMMMMN         " << bold << "DE: " << offAll << '\n' <<
-    "       .NMMMMMMMMMMMMMMMMMMM`         " << bold << "CPU: " << offAll << CPU.CPU << '\n' <<
+    "        .NMMMMMMMMMMMMMMMMMMN         " << "DE: " << offAll << OS.DE << '\n' << bold <<
+    "       .NMMMMMMMMMMMMMMMMMMM`         " << "CPU: " << offAll << CPU.CPU << '\n' << bold <<
     "      .NMMMMMMMMMMMMMMMMMMM`          \n" <<
-    "      NMMMMMMMMMMMMMMMMMM`            " << bold << "GPU: " << offAll << GPU.GPU << '\n' <<
-    "      NMMMMMMMMMMMMMMM`               " << bold << "OpenGL: " << offAll << GPU.GLVersion << '\n' <<
-    "      `NMMMMMMMMMMM`    ....          " << bold << "Resolution: " << offAll << '\n' <<
+    "      NMMMMMMMMMMMMMMMMMM`            " << "GPU: " << offAll << GPU.GPU << '\n' << bold <<
+    "      NMMMMMMMMMMMMMMM`               " << "OpenGL: " << offAll << GPU.GLVersion << '\n' << bold <<
+    "      `NMMMMMMMMMMM`    ....          " << "Resolution: " << offAll << GPU.resolution << '\n' << bold <<
     "       `NMMMMMMMM     .NNMMMN.        \n" <<
-    "        `NMMMMMMM.    NMMMMMN`        " << bold << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" <<
-    RAM.usedInPercentages << ")\n" <<
+    "        `NMMMMMMM.    NMMMMMN`        " << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" <<
+    RAM.usedInPercentages << ")\n" << bold <<
     "         `NMMMMMMNb..dMMMMMN`         \n" <<
-    "           `NMMMMMMMMMMMMMN`          " << bold << "Root: " << HDDRoot.used << offAll << " / " << HDDRoot.total <<
-    " (" << HDDRoot.usedInPercentages << ")\n" <<
-    "              `NMMMMMMMNN`            " << bold << "Home: " << HDDHome.used << offAll << " / " << HDDHome.total <<
+    "           `NMMMMMMMMMMMMMN`          " << "Root: " << HDDRoot.used << offAll << " / " << HDDRoot.total <<
+    " (" << HDDRoot.usedInPercentages << ")\n" << bold <<
+    "              `NMMMMMMMNN`            " << "Home: " << HDDHome.used << offAll << " / " << HDDHome.total <<
     " (" << HDDHome.usedInPercentages << ")\n" << offAll << endl;
 }
 
 void Logos::gnomeCircle() {
-    cout << '\n' <<
-    "             .NMMMNMMMMNMMMN.              " << bold << "OS: " << offAll << distro.name << " " <<
+    cout << '\n' << bold <<
+    "             .NMMMNMMMMNMMMN.              " << "OS: " << offAll << OS.distroName << " " << bold <<
     OS.architecture << '\n' <<
     "         .NMMMMMMMMMMMMMMMNMMMMN.          \n" <<
-    "       .NMMMMMMMMNMMNMMMN`    `MMN.        " << bold << "Kernel: " << offAll << OS.kernelVersion << '\n' <<
-    "     .NMMMMMbsdMM`  `MMy      .MMMMN.      " << bold << "Uptime: " << offAll << uptime.uptime << '\n' <<
+    "       .NMMMMMMMMNMMNMMMN`    `MMN.        " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
+    "     .NMMMMMbsdMM`  `MMy      .MMMMN.      " << "Uptime: " << offAll << uptime.uptime << '\n' << bold <<
     "    .NMMMMMm   NM.  .MM`     .MMMMMMN.     \n" <<
-    "   .MMMMhsNN.  mMbmmdMM.   .hMMMMMMMMM.    " << bold << "Shell: " << offAll << '\n' <<
-    "  .NMMMm   MNmmMMMMMMMMNmmmMMMMMMMMMMMN.   " << bold << "Packages: " << offAll << '\n' <<
+    "   .MMMMhsNN.  mMbmmdMM.   .hMMMMMMMMM.    " << "Shell: " << offAll << OS.shell << '\n' << bold <<
+    "  .NMMMm   MNmmMMMMMMMMNmmmMMMMMMMMMMMN.   " << "Packages: " << offAll << OS.packages << '\n' << bold <<
     "  sMMMMMh  NMMh```````````sMMMMMMMMMMMNs   \n" <<
-    "  MMMMMMMNmMh`            `MMMMMMMMMMMMM   " << bold << "DE: " << offAll << '\n' <<
-    "  MMMMMMMMm`              .MMMMMMMMMMMMM   " << bold << "CPU: " << offAll << CPU.CPU << '\n' <<
+    "  MMMMMMMNmMh`            `MMMMMMMMMMMMM   " << "DE: " << offAll << OS.DE << '\n' << bold <<
+    "  MMMMMMMMm`              .MMMMMMMMMMMMM   " << "CPU: " << offAll << CPU.CPU << '\n' << bold <<
     "  MMMMMMMM`             .NNMMMMMMMMMMMMM   \n" <<
-    "  sMMMMMMN            .NNMMMMMMMMMMMMMMs   " << bold << "GPU: " << offAll << GPU.GPU << '\n' <<
-    "  `NMMMMMN         .NMMMMMMMMMMMMMMMMMN`   " << bold << "OpenGL: " << offAll << GPU.GLVersion << '\n' <<
-    "   `MMMMMM.      .NMMMNbmmdNMMMMMMMMMM`    " << bold << "Resolution: " << offAll << '\n' <<
+    "  sMMMMMMN            .NNMMMMMMMMMMMMMMs   " << "GPU: " << offAll << GPU.GPU << '\n' << bold <<
+    "  `NMMMMMN         .NMMMMMMMMMMMMMMMMMN`   " << "OpenGL: " << offAll << GPU.GLVersion << '\n' << bold <<
+    "   `MMMMMM.      .NMMMNbmmdNMMMMMMMMMM`    " << "Resolution: " << offAll << GPU.resolution << '\n' << bold <<
     "    `NMMMMM.     `MMMN`    NMMMMMMMMN`     \n" <<
-    "     `NMMMMMh.    `ss`    .MMMMMMMMN`      " << bold << "RAM: " << RAM.used << offAll << " / " << RAM.total <<
-    " (" << RAM.usedInPercentages << ")\n" <<
+    "     `NMMMMMh.    `ss`    .MMMMMMMMN`      " << "RAM: " << RAM.used << offAll << " / " << RAM.total <<
+    " (" << RAM.usedInPercentages << ")\n" << bold <<
     "       `NMMMMMN.        .NMMMMMMMN`        \n" <<
-    "         `NMMMMMNNsssssNMMMMMMMN`          " << bold << "Root: " << HDDRoot.used << offAll << " / " <<
-    HDDRoot.total << " (" << HDDRoot.usedInPercentages << ")\n" <<
-    "             `MMMNMMMMNMMMN`               " << bold << "Home: " << HDDHome.used << offAll << " / " <<
+    "         `NMMMMMNNsssssNMMMMMMMN`          " << "Root: " << HDDRoot.used << offAll << " / " <<
+    HDDRoot.total << " (" << HDDRoot.usedInPercentages << ")\n" << bold <<
+    "             `MMMNMMMMNMMMN`               " << "Home: " << HDDHome.used << offAll << " / " <<
     HDDHome.total << " (" << HDDHome.usedInPercentages << ")\n" << offAll << endl;
 }
 
 void Logos::kde() {
     cout << bold << '\n' <<
-    "                                      " << "OS: " << offAll << distro.name << " " << OS.architecture << '\n' <<
+            "                                      " << "OS: " << offAll << OS.distroName << " " << OS.architecture <<
+            '\n' <<
     bold <<
     "                .----.     .----.     \n" <<
     "                |++++|    /+++++/     " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
     "                |++++|   /+++++/      " << "Uptime: " << offAll << uptime.uptime << '\n' << bold <<
     "        .+++.   |++++|  /+++++/       \n" <<
-    "       `++++++. |++++|_/+++++/        " << "Shell: " << offAll << '\n' << bold <<
-    "        `++++++ |+++++++++++/         " << "Packages: " << offAll << '\n' << bold <<
+            "       `++++++. |++++|_/+++++/        " << "Shell: " << offAll << OS.shell << '\n' << bold <<
+            "        `++++++ |+++++++++++/         " << "Packages: " << offAll << OS.packages << '\n' << bold <<
     "         .++++  |+++++++++++\\         \n" <<
-    "      .+++++    |++++|˝\\+++++\\        " << "DE: " << offAll << '\n' << bold <<
+            "      .+++++    |++++|˝\\+++++\\        " << "DE: " << offAll << OS.DE << '\n' << bold <<
     "    +++++++     |++++|  \\+++++\\       " << "CPU: " << offAll << CPU.CPU << '\n' << bold <<
     "    `++++++.    |++++|   \\+++++\\      \n" <<
     "        `+++.   |++++|    \\+++++\\     " << "GPU: " << offAll << GPU.GPU << '\n' << bold <<
     "         .+++.  `----`     `-----`    " << "OpenGL: " << offAll << GPU.GLVersion << '\n' << bold <<
-    "        .++++++.      .+++++++        " << "Resolution: " << offAll << '\n' << bold <<
+            "        .++++++.      .+++++++        " << "Resolution: " << offAll << GPU.resolution << '\n' << bold <<
     "       .++++++++++++++++++++++`       \n" <<
     "        `++`    +++++:    `++`        " << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" <<
     RAM.usedInPercentages << ")\n" << bold <<
@@ -245,18 +255,22 @@ void Logos::kde() {
 
 void Logos::linuxMint() {
     cout << bold << green << bold << '\n' <<
-    "                                          " << "OS: " << offAll << distro.name << " " << OS.architecture << '\n' <<
+            "                                          " << "OS: " << offAll << OS.distroName << " " <<
+            OS.architecture << '\n' <<
     bold << green <<
     "   ...........................            \n" <<
     "  :MMMMMMMMMMMMMMMMMMMMMMMMMMMM:.         " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold << green <<
     "  :MM````````````````````````MMMMM.       " << "Uptime: " << offAll << uptime.uptime << '\n' << bold << green <<
     "  :MM      " << offAll << bold << ".--.                 " << green << "`MMM.     \n" <<
-    "  :MMMMM.  " << offAll << bold << ":MM:     .--.  .--.    " << green << "`MM.    " << "Shell: " << offAll <<
+            "  :MMMMM.  " << offAll << bold << ":MM:     .--.  .--.    " << green << "`MM.    " << "Shell: " <<
+            offAll << OS.shell <<
     '\n' << bold << green <<
-    "  `MMMMMM  " << offAll << bold << ":MM:  .oNMMMMmmMMMMNo.  " << green << "`MM.   " << "Packages: " << offAll <<
+            "  `MMMMMM  " << offAll << bold << ":MM:  .oNMMMMmmMMMMNo.  " << green << "`MM.   " << "Packages: " <<
+            offAll << OS.packages <<
     '\n' << bold << green <<
     "      :MM  " << offAll << bold << ":MM:  :MMM--MMMM--MMM:   " << green << "MM:   \n" <<
-    "      :MM  " << offAll << bold << ":MM:  :MM:  :MM:  :MM:   " << green << "MM:   " << "DE: " << offAll << '\n' <<
+            "      :MM  " << offAll << bold << ":MM:  :MM:  :MM:  :MM:   " << green << "MM:   " << "DE: " << offAll <<
+            OS.DE << '\n' <<
     bold << green <<
     "      :MM  " << offAll << bold << ":MM:  :MM:  :MM:  :MM:   " << green << "MM:   " << "CPU: " << offAll <<
     CPU.CPU << '\n' << bold << green <<
@@ -265,7 +279,8 @@ void Logos::linuxMint() {
     GPU.GPU << '\n' << bold << green <<
     "      `MM  " << offAll << bold << "`MMMM.           :MMM:   " << green << "MM:   " << "OpenGL: " << offAll <<
     GPU.GLVersion << '\n' << bold << green <<
-    "       `MM. " << offAll << bold << "`MMMMMMMMMMNNNNMMMM`    " << green << "MM:   " << "Resolution: " << offAll <<
+            "       `MM. " << offAll << bold << "`MMMMMMMMMMNNNNMMMM`    " << green << "MM:   " << "Resolution: " <<
+            offAll << GPU.resolution <<
     '\n' << bold << green <<
     "        `MM.  " << offAll << bold << "`MMMMMMMMMMMMMM`      " << green << "MM:   \n" <<
     "         `MMM.                   .:MM:    " << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" <<
@@ -279,7 +294,8 @@ void Logos::linuxMint() {
 
 void Logos::linuxMint2() {
     cout << bold << '\n' <<
-    "                                         " << green << "OS: " << offAll << distro.name << " " << OS.architecture <<
+            "                                         " << green << "OS: " << offAll << OS.distroName << " " <<
+            OS.architecture <<
     '\n' << bold <<
     "   ...........................           \n" <<
     "  :MMMMMMMMMMMMMMMMMMMMMMMMMNMM:.        " << green << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
@@ -287,15 +303,16 @@ void Logos::linuxMint2() {
     offAll << uptime.uptime << '\n' << bold <<
     "  :MM" << green << "ssssssssssssssssssssssssssss" << offAll << bold << "MM.     \n" <<
     "  :MM" << green << "sssssss" << offAll << bold << "MMM" << green << "sssssssssssssssssss" << offAll << bold <<
-    "MM.    " << green << "Shell: " << offAll << '\n' << bold <<
+            "MM.    " << green << "Shell: " << offAll << OS.shell << '\n' << bold <<
     "  `MMMMMM" << green << "sss" << offAll << bold << "MMM" << green << "sssss" << offAll << bold << "NMMMNNMMMMN" <<
-    green << "ssss" << offAll << bold << "MM.   " << green << "Packages: " << offAll << '\n' << bold <<
+            green << "ssss" << offAll << bold << "MM.   " << green << "Packages: " << offAll << OS.packages << '\n' <<
+            bold <<
     "      :MM" << green << "sss" << offAll << bold << "MMM" << green << "ssss" << offAll << bold << "MMM" << green <<
     "ss" << offAll << bold << "MMM" << green << "ss" << offAll << bold << "MMM" << green << "sss" << offAll << bold <<
     "MM:   \n" <<
     "      :MM" << green << "sss" << offAll << bold << "MMM" << green << "sss" << offAll << bold << "MMM" << green <<
     "sss" << offAll << bold << "MMM" << green << "sss" << offAll << bold << "MMM" << green << "ss" << offAll << bold <<
-    "MM:   " << green << "DE: " << offAll << '\n' << bold <<
+            "MM:   " << green << "DE: " << offAll << OS.DE << '\n' << bold <<
     "      :MM" << green << "sss" << offAll << bold << "MMM" << green << "sss" << offAll << bold << "MMM" << green <<
     "sss" << offAll << bold << "MMM" << green << "sss" << offAll << bold << "MMM" << green << "ss" << offAll << bold <<
     "MM:   " << green << "CPU: " << offAll << CPU.CPU << '\n' << bold <<
@@ -307,7 +324,7 @@ void Logos::linuxMint2() {
     "      `MM" << green << "sss" << offAll << bold << "NMNNhooooooooooohMMM" << green << "sss" << offAll << bold <<
     "MM:   " << green << "OpenGL: " << offAll << GPU.GLVersion << '\n' << offAll << bold <<
     "       `MM" << green << "ssss" << offAll << bold << "MMMMMMMMMMMMMMMMN" << green << "ssss" << offAll << bold <<
-    "MM:   " << green << "Resolution: " << offAll << '\n' << bold <<
+            "MM:   " << green << "Resolution: " << offAll << GPU.resolution << '\n' << bold <<
     "        `MM" << green << "ssssssssssssssssssssssss" << offAll << bold << "MM:   \n" <<
     "         `MMM" << green << "sssssssssssssssssssss" << offAll << bold << "NMM:   " << green << "RAM: " <<
     RAM.used << offAll << " / " << RAM.total << " (" << RAM.usedInPercentages << ")\n" << bold <<
@@ -319,28 +336,60 @@ void Logos::linuxMint2() {
 }
 
 void Logos::nothing() {
-    cout << '\n' <<
-    bold << "OS: " << offAll << distro.name << " " << OS.architecture << "\n\n" <<
-    bold << "Kernel: " << offAll << OS.kernelVersion << '\n' <<
-    bold << "Uptime: " << offAll << uptime.uptime << "\n\n" <<
-    bold << "Shell: " << offAll << '\n' <<
-    bold << "Packages: " << offAll << "\n\n" <<
-    bold << "DE: " << offAll << '\n' <<
-    bold << "CPU: " << offAll << CPU.CPU << "\n\n" <<
-    bold << "GPU: " << offAll << GPU.GPU << '\n' <<
-    bold << "OpenGL: " << offAll << GPU.GLVersion << '\n' <<
-    bold << "Resolution: " << offAll << "\n\n" <<
-    bold << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" << RAM.usedInPercentages << ")\n\n" <<
-    bold << "Root: " << HDDRoot.used << offAll << " / " << HDDRoot.total << " (" << HDDRoot.usedInPercentages <<
+    cout <<
+    bold << yellow << "OS: " << offAll << OS.distroName << " " << OS.architecture << "\n" <<
+    bold << yellow << "Kernel: " << offAll << OS.kernelVersion << '\n' <<
+    bold << yellow << "Uptime: " << offAll << uptime.uptime << "\n" <<
+    bold << yellow << "Shell: " << offAll << OS.shell << '\n' <<
+    bold << yellow << "Packages: " << offAll << OS.packages << "\n" <<
+    bold << yellow << "DE: " << offAll << OS.DE << '\n' <<
+    bold << yellow << "CPU: " << offAll << CPU.CPU << "\n" <<
+    bold << yellow << "GPU: " << offAll << GPU.GPU << '\n' <<
+    bold << yellow << "OpenGL: " << offAll << GPU.GLVersion << '\n' <<
+    bold << yellow << "Resolution: " << offAll << GPU.resolution << "\n" <<
+    bold << yellow << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" << RAM.usedInPercentages << ")\n" <<
+    bold << yellow << "Root: " << HDDRoot.used << offAll << " / " << HDDRoot.total << " (" <<
+    HDDRoot.usedInPercentages <<
     ")\n" <<
-    bold << "Home: " << HDDHome.used << offAll << " / " << HDDHome.total << " (" << HDDHome.usedInPercentages << ")" <<
+    bold << yellow << "Home: " << HDDHome.used << offAll << " / " << HDDHome.total << " (" <<
+    HDDHome.usedInPercentages << ")" <<
     offAll << endl;
+}
+
+void Logos::openSuse() {
+    cout << '\n' << bold << green <<
+    "                                           " << "OS: " << offAll << OS.distroName << " " << OS.architecture <<
+    '\n' << bold << green <<
+    "                                           \n" <<
+    "                                           " << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
+    green << bold << green <<
+    "                                           " << "Uptime: " << offAll << uptime.uptime << "\n" << bold << green <<
+    bold << green <<
+    "                                           \n" <<
+    "          ..:+ooooooooooooo:. /ooooo:.     " << "Shell: " << offAll << OS.shell << '\n' << bold << green <<
+    "       .:+ooooooooooooooooooooooooooooo.   " << "Packages: " << offAll << OS.packages << "\n" << bold << green <<
+    "    .:+oooooooooooooooooooooooooooo   oo.  \n" <<
+    "  .:+ooooooooooooooooooooooooooo.  `--`˝   " << "DE: " << offAll << OS.DE << '\n' << bold << green <<
+    " .:::--------oooooooooooooooooooooooooo:`  " << "CPU: " << offAll << CPU.CPU << "\n" << bold << green <<
+    " ::: .-----.  `oooo-˝˝-oooooo:`````````    \n" <<
+    " ::: :___  :.  `oo      `ooo:              " << "GPU: " << offAll << GPU.GPU << '\n' << bold << green <<
+    " `::.     .:`   `.        ``o.             " << "OpenGL: " << offAll << GPU.GLVersion << '\n' << bold << green <<
+    "   `:::::::`                               " << "Resolution: " << offAll << GPU.resolution << "\n" << bold <<
+    green <<
+    "                                           \n" <<
+    "                                           " << "RAM: " << RAM.used << offAll << " / " << RAM.total << " (" <<
+    RAM.usedInPercentages << ")\n" << bold << green <<
+    "                                           " << "Root: " << HDDRoot.used << offAll << " / " << HDDRoot.total <<
+    " (" << HDDRoot.usedInPercentages << ")\n" << bold << green <<
+    "                                           " << "Home: " << HDDHome.used << offAll << " / " << HDDHome.total <<
+    " (" << HDDHome.usedInPercentages << ")" << offAll << endl;
 }
 
 void Logos::rhel() {
     if (color) {
         cout << '\n' <<
-        "             ..NNNNNNNNNNNN..              " << bold << red << "OS: " << offAll << distro.name << " " <<
+                "             ..NNNNNNNNNNNN..              " << bold << red << "OS: " << offAll << OS.distroName <<
+                " " <<
         OS.architecture << '\n' <<
         "         .NNNMMMMMMMMMMMMMMMMNN.           \n" <<
         "       .NMMMMMm" << bold << red << "yyyyyyyyyyyy" << offAll << "mMMMMNN.        " << bold << red <<
@@ -350,20 +399,21 @@ void Logos::rhel() {
         "    .NMMMMMMM" << bold << red << "yyy" << offAll << "Nmmmh" << bold << red << "yyyyyyyyy" << offAll <<
         "MMMMMMN.     \n" <<
         "   .NMMNN" << bold << red << "yyy" << offAll << "Nh" << bold << red << "yyyyyyyyyyyyyyyy" << offAll <<
-        "mMMMMMMN.    " << bold << red << "Shell: " << offAll << '\n' <<
+                "mMMMMMMN.    " << bold << red << "Shell: " << offAll << OS.shell << '\n' <<
         "   NMMh" << bold << red << "yyyyy" << offAll << "NMNm" << bold << red << "yyyyyyyyyyyyyyy" << offAll <<
-        "MMMMMMMM    " << bold << red << "Packages: " << offAll << '\n' <<
+                "MMMMMMMM    " << bold << red << "Packages: " << offAll << OS.packages << '\n' <<
         "  .MMM" << bold << red << "yyyyyyy" << offAll << "hmNMMMMN" << bold << red << "yyyyyyyyyyy" << offAll <<
         "hmNMMMM.   \n" <<
         "  sMMMMN" << bold << red << "yyyyyyyy" << offAll << "hhdmNN" << bold << red << "yyyyyyyyyyyyy" << offAll <<
-        "hNMMs   " << bold << red << "DE: " << offAll << '\n' <<
+                "hNMMs   " << bold << red << "DE: " << offAll << OS.DE << '\n' <<
         "  MMMMMMMN" << bold << red << "yyyyyyyyyyyyyyyyyyyyyyyyyy" << offAll << "mMMM   " << bold << red << "CPU: " <<
         offAll << CPU.CPU << '\n' <<
         "  sMMMMMMMNood" << bold << red << "yyyyyyyyyyyyyyyyyyyyy" << offAll << "dMMMs   \n" <<
         "  `MMMMMMMN  `oommdd" << bold << red << "yyyyyyyyyyyy" << offAll << "dmMMMMM`   " << bold << red << "GPU: " <<
         offAll << GPU.GPU << '\n' <<
         "   `````.NNN`   `omNNmddmhdmdNNMMMMMMMN    " << bold << red << "OpenGL: " << offAll << GPU.GLVersion << '\n' <<
-        "   ```     `                `NMMMMMMMN`    " << bold << red << "Resolution: " << offAll << '\n' <<
+                "   ```     `                `NMMMMMMMN`    " << bold << red << "Resolution: " << offAll <<
+                GPU.resolution << '\n' <<
         "    ```               sss   .MMMMMMMN`     \n" <<
         "     ```                   NMN`  ```       " << bold << red << "RAM: " << RAM.used << offAll << " / " <<
         RAM.total << " (" << RAM.usedInPercentages << ")\n" <<
@@ -375,20 +425,21 @@ void Logos::rhel() {
     }
     else {
         cout << bold << '\n' <<
-        "             ..NNNNNNNNNNNN..              " << "OS: " << distro.name << " " << OS.architecture << "\n" <<
+                "             ..NNNNNNNNNNNN..              " << "OS: " << OS.distroName << " " << OS.architecture <<
+                "\n" <<
         "         .NNNMMMNNMMMMMNNMMMMMN.           \n" <<
         "       .NMMMMMN`         ``NNMMMNN.        " << "Kernel: " << OS.kernelVersion << '\n' <<
         "     .NMMMMMMN              `NMMMMN.       " << "Uptime: " << uptime.uptime << '\n' <<
         "    .NMMMMMMM. sssss.        `MMMMMMN.     \n" <<
-        "   .NMMMMNNNN                 sMMMMMMN.    " << "Shell: " << '\n' <<
-        "  .NMN.     `MMNN:.           .MMMMMMMN.   " << "Packages: " << '\n' <<
+                "   .NMMMMNNNN                 sMMMMMMN.    " << "Shell: " << OS.shell << '\n' <<
+                "  .NMN.     `MMNN:.           .MMMMMMMN.   " << "Packages: " << OS.packages << '\n' <<
         "  sMMN.      `NMMMMNN.         NNNNMMMMs   \n" <<
-        "  NMMMMd.        ``NMN.            `NMMN   " << "DE: " << '\n' <<
+                "  NMMMMd.        ``NMN.            `NMMN   " << "DE: " << OS.DE << '\n' <<
         "  NMMMMMMNN.                        NMMN   " << "CPU: " << CPU.CPU << '\n' <<
         "  sMMMMMMMMNN..                    .MMMs   \n" <<
         "  `MMMMMMMN  `NNNN:..           .NNMMMM`   " << "GPU: " << GPU.GPU << '\n' <<
         "  ```````NNN`    `NNNNMMNMNMMMMMMMMMMM`    " << "OpenGL: " << GPU.GLVersion << '\n' <<
-        "   ```     `                `NMMMMMMM`     " << "Resolution: " << '\n' <<
+                "   ```     `                `NMMMMMMM`     " << "Resolution: " << GPU.resolution << '\n' <<
         "    ```               sss   .MMMMMMM`      \n" <<
         "     ```                   NMN`  ```       " << "RAM: " << RAM.used << " / " << RAM.total << " (" <<
         RAM.usedInPercentages << ")\n" <<
@@ -403,7 +454,8 @@ void Logos::rhel() {
 void Logos::tux() {
     cout << bold << '\n' <<
     "               .nndMMbnn.               \n" <<
-    "              .NNMMMMMMNN.              " << yellow << "OS: " << offAll << distro.name << " " << OS.architecture <<
+            "              .NNMMMMMMNN.              " << yellow << "OS: " << offAll << OS.distroName << " " <<
+            OS.architecture <<
     '\n' << bold <<
     "              dMNMMMNMMMMMb             \n" <<
     "              NM' 'bnd' 'MN             " << yellow << "Kernel: " << offAll << OS.kernelVersion << '\n' << bold <<
@@ -411,11 +463,11 @@ void Logos::tux() {
     "Uptime: " << offAll << uptime.uptime << '\n' << bold <<
     "              NM" << bold << yellow << ":::::::" << offAll << bold << "NMMN             \n" <<
     "             .N" << bold << yellow << ":::::::::" << offAll << bold << "MNMb            " << yellow << "Shell: " <<
-    offAll << '\n' << bold <<
+            offAll << OS.shell << '\n' << bold <<
     "            .dM " << bold << yellow << "`:::`" << offAll << bold << "   MMMMN.          " << yellow <<
-    "Packages: " << offAll << '\n' << bold <<
+            "Packages: " << offAll << OS.packages << '\n' << bold <<
     "           .NN`          NMMMN.         \n" <<
-    "          .NMN           `mMNMM.        " << yellow << "DE: " << offAll << '\n' << bold <<
+            "          .NMN           `mMNMM.        " << yellow << "DE: " << offAll << OS.DE << '\n' << bold <<
     "         .MNM     " << offAll << "GNU" << bold << "     `MNNMM.       " << bold << yellow << "CPU: " << offAll <<
     CPU.CPU << '\n' << bold <<
     "         NMN               `MMNMM.      \n" <<
@@ -424,7 +476,8 @@ void Logos::tux() {
     "       .NMNb               .NNMNNN      " << bold << yellow << "OpenGL: " << offAll << GPU.GLVersion << '\n' <<
     bold <<
     "       " << bold << yellow << "----" << offAll << bold << "NN.             " << bold << yellow << "--" << offAll <<
-    bold << "MMMN" << bold << yellow << "--     " << bold << yellow << "Resolution: " << offAll << '\n' << yellow <<
+            bold << "MMMN" << bold << yellow << "--     " << bold << yellow << "Resolution: " << offAll <<
+            GPU.resolution << '\n' << yellow <<
     bold <<
     "   ---------" << offAll << bold << "NN. " << bold << yellow << "          " << offAll << bold << "." << bold <<
     yellow << "---" << offAll << bold << "NN" << bold << yellow << "----.   \n" << bold <<
@@ -442,7 +495,8 @@ void Logos::ubuntu() {
     if (color) {
         string orange = "\033[38;5;166m";
         cout << '\n' << orange << bold <<
-        "             ..ssssssssssss..              " << "OS: " << offAll << distro.name << " " << OS.architecture <<
+                "             ..ssssssssssss..              " << "OS: " << offAll << OS.distroName << " " <<
+                OS.architecture <<
         "\n" << orange << bold <<
         "          .ssssssssssssssssssss.           \n" <<
         "       .sssssssssssssssss" << offAll << bold << "dMMb" << orange << "sssss.        " << "Kernel: " << offAll <<
@@ -451,13 +505,13 @@ void Logos::ubuntu() {
         uptime.uptime << '\n' << orange << bold <<
         "    .ssssssssss" << offAll << bold << "dNNMMMMMbdNMMP" << orange << "ssssssss.     \n" <<
         "   .sssssssss" << offAll << bold << "s" << orange << "ss" << offAll << bold << "NNMNNNNMMMMMNb" << orange <<
-        "ssssssss.    " << "Shell: " << offAll << '\n' << orange << bold <<
+                "ssssssss.    " << "Shell: " << offAll << OS.shell << '\n' << orange << bold <<
         "   ssssssss" << offAll << bold << "dNMb" << orange << "ssssssssss" << offAll << bold << "TMMMNb" << orange <<
-        "ssssssss.   " << "Packages: " << offAll << '\n' << orange << bold <<
+                "ssssssss.   " << "Packages: " << offAll << OS.packages << '\n' << orange << bold <<
         "  :sssssss" << offAll << bold << "dMMMN" << orange << "ssssssssssss" << offAll << bold << "TMMMb" << orange <<
         "sssssss:   \n" <<
         "  +sss" << offAll << bold << "dNNbdNMN" << orange << "ssssssssssssss" << offAll << bold << "NMMN" << orange <<
-        "sssssss+   " << "DE: " << offAll << '\n' << orange << bold <<
+                "sssssss+   " << "DE: " << offAll << OS.DE << '\n' << orange << bold <<
         "  sss" << offAll << bold << "dMMMMmhMN" << orange << "ssssssssssssssssssssssssss   " << "CPU: " << offAll <<
         CPU.CPU << '\n' << orange << bold <<
         "  +sss" << offAll << bold << "NMNPdNMN" << orange << "ssssssssssssss" << offAll << bold << "NMMN" << orange <<
@@ -467,7 +521,7 @@ void Logos::ubuntu() {
         "   ssssssss" << offAll << bold << "NNMMMP" << orange << "ssssssss" << offAll << bold << "nMMMNP" << orange <<
         "ssssssss`   " << "OpenGL: " << offAll << GPU.GLVersion << '\n' << orange << bold <<
         "   `sssssssss" << offAll << bold << "NNP" << orange << "ss" << offAll << bold << "NNNNNMMNMNNP" << orange <<
-        "ssssssss`    " << "Resolution: " << offAll << '\n' << orange << bold <<
+                "ssssssss`    " << "Resolution: " << offAll << GPU.resolution << '\n' << orange << bold <<
         "    `ssssssssssss" << offAll << bold << "NNMMMMNPdMMMb" << orange << "sssssss`     \n" <<
         "      sssssssssssssssssss" << offAll << bold << "NMMMP" << orange << "ssssss`      " << "RAM: " << offAll <<
         RAM.used << " / " << RAM.total << " (" << RAM.usedInPercentages << ")\n" << orange << bold <<
@@ -479,20 +533,21 @@ void Logos::ubuntu() {
     }
     else {
         cout << '\n' <<
-        "             ..ssssssssssss..              " << "OS: " << distro.name << " " << OS.architecture << "\n" <<
+                "             ..ssssssssssss..              " << "OS: " << OS.distroName << " " << OS.architecture <<
+                "\n" <<
         "          .ssssssssssssssssssss.           \n" <<
         "       .ssssssssssssssssssssssssss.        " << "Kernel: " << OS.kernelVersion << '\n' <<
         "      .ssssssssssssssssss`   `ssssss.      " << "Uptime: " << uptime.uptime << '\n' <<
         "    .ssssssssssss:```````    .sssssss.     \n" <<
-        "   .sssssssss:`\\             sssssssss.    " << "Shell: " << '\n' <<
-        "   ssssssss+`   \\.sssssss.   `sssssssss    " << "Packages: " << '\n' <<
+                "   .sssssssss:`\\             sssssssss.    " << "Shell: " << OS.shell << '\n' <<
+                "   ssssssss+`   \\.sssssss.   `sssssssss    " << "Packages: " << OS.packages << '\n' <<
         "  :sssssss+   .ssssssssssss.   ssssssss:   \n" <<
-        "  +ssss`   `  ssssssssssssss   .sssssss+   " << "DE: " << '\n' <<
+                "  +ssss`   `  ssssssssssssss   .sssssss+   " << "DE: " << OS.DE << '\n' <<
         "  ssss       :ssssssssssssss----ssssssss   " << "CPU: " << CPU.CPU << '\n' <<
         "  +ssss.   .  ssssssssssssss   .sssssss+   \n" <<
         "  :ssssssss   `ssssssssssss`   ssssssss:   " << "GPU: " << GPU.GPU << '\n' <<
         "   sssssssss.   `ssssssss`   .sssssssss    " << "OpenGL: " << GPU.GLVersion << '\n' <<
-        "   `ssssssssos.  / ````      sssssssss`    " << "Resolution: " << '\n' <<
+                "   `ssssssssos.  / ````      sssssssss`    " << "Resolution: " << GPU.resolution << '\n' <<
         "    `sssssssssss/.       .   `sssssss`     \n" <<
         "      sssssssssssssssssso.   .ssssss`      " << "RAM: " << RAM.used << " / " << RAM.total << " (" <<
         RAM.usedInPercentages << ")\n" <<

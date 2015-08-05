@@ -1,10 +1,12 @@
 #include "Reader.h"
+#include "Str2int.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -61,8 +63,19 @@ Reader::HDD Reader::getHDD(string partition) {
     return HDD;
 }
 
-Reader::Distro Reader::getDistro() {
-    Distro distro;
+void Reader::getArchitectureAndKernelVersion(string &architecture, string &kernelVersion) {
+    struct utsname utsnameBuffer;
+
+    if (uname(&utsnameBuffer) != 0) {
+        cerr << "ERROR: Failed get information from uname." << endl;
+    }
+    else {
+        architecture = utsnameBuffer.machine;
+        kernelVersion = utsnameBuffer.release;
+    }
+}
+
+void Reader::getDistroNameAndID(string &distroName, string &distroID) {
     ifstream ifsOsRelease("/etc/os-release");
 
     if (!ifsOsRelease)
@@ -72,34 +85,159 @@ Reader::Distro Reader::getDistro() {
         bool IdFound = false;
         while (ifsOsRelease) {
             getline(ifsOsRelease, line);
-            if (line.find("PRETTY_NAME=") != string::npos) {
-                distro.name = line;
-            }
+            if (line.find("PRETTY_NAME=") != string::npos)
+                distroName = line;
             else if (line.find("ID=") != string::npos && !IdFound) {
-                distro.ID = line;
+                distroID = line;
                 IdFound = true;
             }
         }
 
-        removeSubString(distro.name, "PRETTY_NAME=");
-        if (removeSubString(distro.name, "\"")) //Because " are two (if exist)
-            removeSubString(distro.name, "\"");
-        removeSubString(distro.ID, "ID=");
+        removeSubString(distroName, "PRETTY_NAME=");
+        if (removeSubString(distroName, "\"")) //Because " are two (if exist)
+            removeSubString(distroName, "\"");
+        removeSubString(distroID, "ID=");
     }
-    return distro;
+}
+
+string Reader::getShell() {
+    string shell;
+    char *chShell(getenv("SHELL"));
+    if (chShell != NULL)
+        shell = chShell;
+
+    if (shell == "/bin/bash") {
+        stringstream stringstream1(executeCommand("bash --version"));
+        getline(stringstream1, shell);
+
+        size_t foundpos = shell.find("(");
+        if (foundpos != string::npos)
+            shell.erase(shell.begin() + foundpos, shell.end());
+
+        shell.erase(remove_if(shell.begin(), shell.end(), [](char c) { //Erase all except digit and . (dot)
+            return !(isdigit(static_cast<unsigned char>(c)) || c == '.');
+        }), shell.end());
+
+        shell = "Bash " + shell;
+    }
+    return shell;
+}
+
+string Reader::getDE() {
+    string DE;
+    char *chDE(getenv("XDG_CURRENT_DESKTOP"));
+    if (chDE != NULL)
+        DE = chDE;
+    else {
+        chDE = getenv("DESKTOP_SESSION");
+        if (chDE != NULL)
+            DE = chDE;
+    }
+
+    switch (str2int(DE.c_str())) {
+        case str2int("GNOME"):
+        case str2int("gnome"):
+        case str2int("gnome-wayland"):
+            DE = executeCommand("gnome-shell --version");
+            DE.erase(std::remove(DE.begin(), DE.end(), '\n'), DE.end());
+            chDE = getenv("DESKTOP_SESSION");
+            if (string(chDE) == "gnome-wayland")
+                DE += " Wayland";
+            break;
+        case str2int("X-Cinnamon"):
+        case str2int("Cinnamon"):
+            DE = executeCommand("cinnamon --version");
+            DE.erase(std::remove(DE.begin(), DE.end(), '\n'), DE.end());
+            break;
+        case str2int("KDE"): {
+            DE = "KDE ";
+            chDE = getenv("KDE_SESSION_VERSION");
+            if (string(chDE) == "5") {
+                DE += "Plasma ";
+            }
+
+            ifstream ifsplasmaDesktop("/usr/share/xsessions/plasma.desktop");
+
+            if (!ifsplasmaDesktop)
+                cerr << "ERROR: Failed open file /usr/share/xsessions/plasma.desktop." << endl;
+            else {
+                string line;
+                while (ifsplasmaDesktop) {
+                    getline(ifsplasmaDesktop, line);
+                    if (line.find("X-KDE-PluginInfo-Version=") != string::npos)
+                        DE += line;
+                }
+                removeSubString(DE, "X-KDE-PluginInfo-Version=");
+            }
+        }
+            break;
+        case str2int("ENLIGHTENMENT"):
+            DE = "Enlightemenment";
+            break;
+        case str2int("Unity"):
+            DE = "Unity" + executeCommand("unity --version");
+            break;
+        case str2int("MATE"):
+            DE = "Mate" + executeCommand("mate-session --version");
+            break;
+        case str2int("LXDE"):
+        case str2int("Lubuntu"):
+            DE = "LXDE";
+            break;
+        case str2int("xfce"):
+        case str2int("xfce4"):
+        case str2int("'Xfce Session'"):
+            DE = "XFCE";
+            break;
+        case str2int("'budgie-desktop'"):
+            DE = "Budgie";
+            break;
+    }
+
+    return DE;
+}
+
+string Reader::getPackagesCount(const string &distroID) {
+    stringstream packagesList;
+    string packages;
+    switch (str2int(distroID.c_str())) {
+        case str2int("arch"):
+            packagesList << executeCommand("pacman -Qq");
+            break;
+        case str2int("debian"):
+        case str2int("ubuntu"): {
+            packagesList << executeCommand("dpkg --get-selections");
+        }
+            break;
+        case str2int("fedora"):
+        case str2int("rhel"):
+        case str2int("opensuse"):
+        case str2int("suse"):
+            //packagesList << executeCommand("rpm -qa"); //This is performance problem (Test on Fedora 22). Maybe: https://bugzilla.redhat.com/show_bug.cgi?id=1194222
+            packages = "???";
+            break;
+        default:
+            packages = "???";
+            break;
+    }
+    int packagesCount(0);
+    while (packagesList) {
+        string s;
+        getline(packagesList, s);
+        packagesCount++;
+    }
+    if (packagesCount != 0)
+        packages = to_string(packagesCount);
+    return packages;
 }
 
 Reader::OS Reader::getOS() {
     struct OS OS;
-    struct utsname utsnameBuffer;
-
-    if (uname(&utsnameBuffer) != 0) {
-        cerr << "ERROR: Failed get information from uname." << endl;
-    }
-    else {
-        OS.architecture = utsnameBuffer.machine;
-        OS.kernelVersion = utsnameBuffer.release;
-    }
+    getArchitectureAndKernelVersion(OS.architecture, OS.kernelVersion);
+    getDistroNameAndID(OS.distroName, OS.distroID);
+    OS.shell = getShell();
+    OS.DE = getDE();
+    OS.packages = getPackagesCount(OS.distroID);
     return OS;
 }
 
@@ -230,6 +368,25 @@ Reader::GPU Reader::getGPU() {
     }
     removeSubString(GPU.GPU, "OpenGL renderer string: ");
     removeSubString(GPU.GLVersion, "OpenGL version string: ");
+
+    string xrandr = executeCommand("xrandr --current");
+
+    string::size_type foundpos(xrandr.find("current"));
+    if (foundpos != string::npos)
+        xrandr.erase(xrandr.begin(), xrandr.begin() + foundpos);
+
+    removeSubString(xrandr, "current ");
+
+    foundpos = xrandr.find(",");
+    if (foundpos != string::npos)
+        xrandr.erase(xrandr.begin() + foundpos, xrandr.end());
+
+    xrandr.erase(remove_if(xrandr.begin(), xrandr.end(), [](char c) {
+        return std::isspace(static_cast<unsigned char>(c));
+    }), xrandr.end());
+
+    GPU.resolution = xrandr;
+
     return GPU;
 }
 

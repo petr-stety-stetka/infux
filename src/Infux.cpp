@@ -3,7 +3,7 @@
 #include "Writer.h"
 #include "Str2int.h"
 
-#define VERSION "0.6.0"
+#define VERSION "0.7.0"
 
 string help = "Usage: infux [OPTIONS]\n\n"
         "infux - a program for display info about system (Screenshot Information Tool).\n"
@@ -11,7 +11,7 @@ string help = "Usage: infux [OPTIONS]\n\n"
         "Github: https://github.com/petr-stety-stetka/infux\n\n"
         "Supported LOGOs:\n"
         "   Arch-Linux, Debian, Fedora, GNOME, GNOME-circle, KDE, Linux-Mint,\n"
-        "   Linux-Mint-2, nothing, RHEL, tux, Ubuntu\n\n"
+        "   Linux-Mint-2, nothing, openSUSE, RHEL, tux, Ubuntu\n\n"
         "OPTIONS:\n"
         "   -c, --colors-off            Turn off colors.\n"
         "   -l[LOGO], --logo[LOGO]      Show another logo, for ex.: -l[tux]\n"
@@ -22,15 +22,8 @@ int main(int argc, char *argv[]) {
     Writer writer;
     {
         Reader reader;
-        Reader::Distro distro(reader.getDistro());
-        Reader::OS OS(reader.getOS());
-        Reader::RAM RAM(reader.getRAM());
-        Reader::CPU CPU(reader.getCPU());
-        Reader::GPU GPU(reader.getGPU());
-        Reader::HDD HDDRoot(reader.getHDDRoot());
-        Reader::HDD HDDHome(reader.getHDDHome());
-        Reader::Uptime uptime(reader.getUptime());
-        writer.init(distro, OS, RAM, CPU, GPU, HDDRoot, HDDHome, uptime);
+        writer.init(reader.getOS(), reader.getRAM(), reader.getCPU(), reader.getGPU(), reader.getHDDRoot(),
+                    reader.getHDDHome(), reader.getUptime());
     }
 
     bool write(true);
@@ -52,51 +45,55 @@ int main(int argc, char *argv[]) {
                 break;
             case str2int("-l[Arch-Linux]"):
             case str2int("-logo[Arch-Linux]"):
-                writer.setLogoID("arch");
+                writer.setLogo(Logos::logos::arch);
                 break;
             case str2int("-l[Debian]"):
             case str2int("-logo[Debian]"):
-                writer.setLogoID("debian");
+                writer.setLogo(Logos::logos::debian);
                 break;
             case str2int("-l[Fedora]"):
             case str2int("-logo[Fedora]"):
-                writer.setLogoID("fedora");
+                writer.setLogo(Logos::logos::fedora);
                 break;
             case str2int("-l[GNOME]"):
             case str2int("-logo[GNOME]"):
-                writer.setLogoID("gnome");
+                writer.setLogo(Logos::logos::gnome);
                 break;
             case str2int("-l[GNOME-circle]"):
             case str2int("-logo[GNOME-circle]"):
-                writer.setLogoID("gnome-circle");
+                writer.setLogo(Logos::logos::gnomeCircle);
                 break;
             case str2int("-l[KDE]"):
             case str2int("-logo[KDE]"):
-                writer.setLogoID("kde");
+                writer.setLogo(Logos::logos::kde);
                 break;
             case str2int("-l[Linux-Mint]"):
             case str2int("-logo[Linux-Mint]"):
-                writer.setLogoID("linux-mint");
+                writer.setLogo(Logos::logos::linuxMint);
                 break;
             case str2int("-l[Linux-Mint-2]"):
             case str2int("-logo[Linux-Mint-2]"):
-                writer.setLogoID("linux-mint-2");
+                writer.setLogo(Logos::logos::linuxMint2);
                 break;
             case str2int("-l[nothing]"):
             case str2int("-logo[nothing]"):
-                writer.setLogoID("nothing");
+                writer.setLogo(Logos::logos::nothing);
+                break;
+            case str2int("-l[openSUSE]"):
+            case str2int("-logo[openSUSE]"):
+                writer.setLogo(Logos::logos::openSuse);
                 break;
             case str2int("-l[RHEL]"):
             case str2int("-logo[RHEL]"):
-                writer.setLogoID("rhel");
+                writer.setLogo(Logos::logos::rhel);
                 break;
             case str2int("-l[tux]"):
             case str2int("-logo[tux]"):
-                writer.setLogoID("tux");
+                writer.setLogo(Logos::logos::tux);
                 break;
             case str2int("-l[Ubuntu]"):
             case str2int("-logo[Ubuntu]"):
-                writer.setLogoID("ubuntu");
+                writer.setLogo(Logos::logos::ubuntu);
                 break;
             default:
                 cerr << "Invalid option: \"" << argv[i] << "\"!\n" << help << endl;
@@ -106,4 +103,5 @@ int main(int argc, char *argv[]) {
     }
     if (write)
         writer.write();
+    return 0;
 }

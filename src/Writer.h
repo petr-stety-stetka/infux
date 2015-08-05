@@ -2,13 +2,13 @@
 
 #include <string>
 #include "Reader.h"
+#include "Logos.h"
 
 using namespace std;
 
 class Writer {
 private:
     bool color = true;
-    Reader::Distro distro;
     Reader::OS OS;
     Reader::RAM RAM;
     Reader::CPU CPU;
@@ -16,9 +16,12 @@ private:
     Reader::HDD HDDRoot;
     Reader::HDD HDDHome;
     Reader::Uptime uptime;
+
+    Logos::logos logo;
+
 public:
 
-    void init(Reader::Distro distro, Reader::OS OS, Reader::RAM RAM, Reader::CPU CPU, Reader::GPU GPU,
+    void init(Reader::OS OS, Reader::RAM RAM, Reader::CPU CPU, Reader::GPU GPU,
               Reader::HDD HDDRoot,
               Reader::HDD HDDHome, Reader::Uptime uptime);
 
@@ -29,7 +32,7 @@ public:
     }
 
 
-    void setLogoID(const string &ID) {
-        distro.ID = ID;
+    void setLogo(Logos::logos logo) {
+        Writer::logo = logo;
     }
 };

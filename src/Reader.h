@@ -6,14 +6,14 @@ using namespace std;
 
 class Reader {
 public:
-    struct Distro {
-        string ID;
-        string name;
-    };
-
     struct OS {
         string architecture;
         string kernelVersion;
+        string shell;
+        string DE;
+        string packages;
+        string distroID;
+        string distroName;
     };
 
     struct RAM {
@@ -30,6 +30,7 @@ public:
     struct GPU {
         string GPU;
         string GLVersion;
+        string resolution;
     };
 
     struct HDD {
@@ -42,8 +43,6 @@ public:
     struct Uptime {
         string uptime;
     };
-
-    Distro getDistro();
 
     OS getOS();
 
@@ -71,4 +70,14 @@ private:
     std::string executeCommand(string command);
 
     Reader::HDD getHDD(string partition);
+
+    void getArchitectureAndKernelVersion(string &architecture, string &kernelVersion);
+
+    void getDistroNameAndID(string &distroName, string &distroID);
+
+    string getPackagesCount(const string &distroID);
+
+    string getShell();
+
+    string getDE();
 };
