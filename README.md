@@ -1,6 +1,6 @@
 #infux
 
-**infux is program for display info about system** (Screenshot Information Tool), writen in C++ (so is very fast). <br>
+**infux is program for display info about system** (Screenshot Information Tool), writen in C++ (so is fast). <br>
 Output can colored(default) or nocolored. Logo will be selected automatically according to the distribution (or manually).<br><br>
 **Displays the following information:**
 - Operating system - distribution
