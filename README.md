@@ -24,7 +24,7 @@ Output can colored(default) or nocolored. Logo will be selected automatically ac
 <img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-fedora-0.5.png" width="500px" /> 
 
 ##Dependencies:
-File /etc/os-release (default exist on systemd systems).<br>
+File /etc/os-release (default exist on systemd systems) or lsb-release package.<br>
 For detect GPU and OpenGL you must have installed mesa-utils package.
 
 ##Compilation:
@@ -45,18 +45,20 @@ infux \[OPTIONS\] <br><br>
   - [x] DE info
   - [x] Packages info<br>
 
-- [ ] **version 0.8:**<br>
-  - [ ] Work on distros without systemd(file /etc/os-release) -> lsb-release (as fallback solutions?)<br>
+- [x] **version 0.8:**<br>
+  - [x] Work on distros without systemd(file /etc/os-release) -> lsb-release (as fallback solutions)<br>
 
 - [ ] **version 0.9:**<br>
-  - [ ] Packages: DEB, RPM...<br>
+  - [ ] DEB package<br>
+  - [ ] RPM package<br>
 
 - [ ] **version 1.0:**<br>
   - [ ] Resize all logos to same size
-  - [ ] Next logos?
+  - [ ] Add next logos
+  - [ ] Add support for next distributions
 
 ##Version
-Actual version is 0.6.0.
+Actual version is 0.8.0.
 
 #License 
 Code is under GNU GPLv3 license.

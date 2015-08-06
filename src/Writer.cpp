@@ -14,44 +14,39 @@ void Writer::init(Reader::OS OS, Reader::RAM RAM, Reader::CPU CPU, Reader::GPU G
 
     switch (str2int(OS.distroID.c_str())) {
         case str2int("arch"):
+        case str2int("archlinux"):
+        case str2int("Arch Linux"):
+        case str2int("ArchLinux"):
+        case str2int("Arch"):
             logo = Logos::logos::arch;
             break;
         case str2int("debian"):
+        case str2int("Debian"):
             logo = Logos::logos::debian;
             break;
         case str2int("fedora"):
+        case str2int("Fedora"):
             logo = Logos::logos::fedora;
             break;
-        case str2int("gnome"):
-            logo = Logos::logos::gnome;
-            break;
-        case str2int("gnome-circle"):
-            logo = Logos::logos::gnomeCircle;
-            break;
-        case str2int("kde"):
-            logo = Logos::logos::kde;
-            break;
-        case str2int("linux-mint"):
+        case str2int("LinuxMint"):
             logo = Logos::logos::linuxMint;
-            break;
-        case str2int("linux-mint-2"):
-            logo = Logos::logos::linuxMint2;
-            break;
-        case str2int("nothing"):
-            logo = Logos::logos::nothing;
             break;
         case str2int("opensuse"):
         case str2int("suse"):
+        case str2int("SUSE LINUX"):
+        case str2int("openSUSE project"):
             logo = Logos::logos::openSuse;
             break;
         case str2int("rhel"):
+        case str2int("RedHatEnterprise"):
             logo = Logos::logos::rhel;
             break;
         case str2int("ubuntu"):
+        case str2int("Ubuntu"):
             logo = Logos::logos::ubuntu;
             break;
-        case str2int("tux"):
         case str2int("linux"):
+        case str2int("GNU/Linux"):
         default:
             logo = Logos::logos::tux;
             break;

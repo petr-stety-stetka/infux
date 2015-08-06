@@ -3,7 +3,7 @@
 #include "Writer.h"
 #include "Str2int.h"
 
-#define VERSION "0.7.0"
+#define VERSION "0.8.0"
 
 string help = "Usage: infux [OPTIONS]\n\n"
         "infux - a program for display info about system (Screenshot Information Tool).\n"

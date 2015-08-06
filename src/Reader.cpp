@@ -78,8 +78,24 @@ void Reader::getArchitectureAndKernelVersion(string &architecture, string &kerne
 void Reader::getDistroNameAndID(string &distroName, string &distroID) {
     ifstream ifsOsRelease("/etc/os-release");
 
-    if (!ifsOsRelease)
-        cerr << "ERROR: Failed open file /etc/os-release." << endl;
+    if (!ifsOsRelease) {
+        //Fallback solution
+        distroID = executeCommand("lsb_release -i");
+        distroName = executeCommand("lsb_release -d");
+
+        if (distroID.empty() || distroName.empty()) {
+            cerr << "ERROR: Failed open file /etc/os-release and failed run lsb_release -a command.\n"
+            <<
+            "You must install lsb-release package or create /etc/os-release file, which default exist on systemd systems." <<
+            endl;
+        }
+        else {
+            removeSubString(distroID, "Distributor ID:\t");
+            removeSubString(distroID, "\n");
+            removeSubString(distroName, "Description:\t");
+            removeSubString(distroName, "\n");
+        }
+    }
     else {
         string line;
         bool IdFound = false;
