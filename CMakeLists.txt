@@ -7,4 +7,4 @@ set(SOURCE_FILES src/Infux.cpp src/Writer.cpp src/Reader.cpp src/Logos.cpp)
 add_executable(infux ${SOURCE_FILES})
 
 install(TARGETS infux DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-install(FILES README.md debian/copyright DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/infux)
+install(FILES README.md DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/infux)

@@ -19,7 +19,7 @@ Output can colored(default) or nocolored. Logo will be selected automatically ac
 **Supports this logos:** Arch-Linux, Debian, Fedora, GNOME, GNOME-circle, KDE, Linux-Mint, Linux-Mint-2, nothing, openSUSE, RHEL, tux, Ubuntu (yet).<br>
 
 ##Screenshots:
-<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-ubuntu-0.6.png" width="500px" /> 
+<img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-ubuntu-0.8.1.png" width="500px" /> 
 <img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-tux-0.5.png" width="500px" /> 
 <img src="https://raw.githubusercontent.com/petr-stety-stetka/infux/master/screenshots/screenshot-fedora-0.5.png" width="500px" /> 
 
