@@ -191,10 +191,12 @@ string Reader::getDE() {
             DE = "Enlightemenment";
             break;
         case str2int("Unity"):
-            DE = "Unity" + executeCommand("unity --version");
+            DE = executeCommand("unity --version");
+            DE.erase(std::remove(DE.begin(), DE.end(), '\n'), DE.end());
             break;
         case str2int("MATE"):
-            DE = "Mate" + executeCommand("mate-session --version");
+            DE = executeCommand("mate-session --version");
+            DE.erase(std::remove(DE.begin(), DE.end(), '\n'), DE.end());
             break;
         case str2int("LXDE"):
         case str2int("Lubuntu"):
@@ -319,9 +321,9 @@ Reader::RAM Reader::getRAM() {
         iUsed = iTotal - stoi(sRAMFree) - stoi(sRAMBuffers) - stoi(sRAMCached) - stoi(sRAMSwapCached);
         iFree = iTotal - iUsed;
 
-        iUsed = iUsed / 1024; //To MB
-        iTotal = iTotal / 1024; //To MB
-        iFree = iFree / 1024; //To MB
+        iUsed = iUsed / 1024; //To MiB
+        iTotal = iTotal / 1024; //To MiB
+        iFree = iFree / 1024; //To MiB
         dUsedInPercentages = (100 / (double) iTotal) * iUsed;
 
         RAM.total = to_string(iTotal) + "MiB";
@@ -383,6 +385,8 @@ Reader::GPU Reader::getGPU() {
         }
     }
     removeSubString(GPU.GPU, "OpenGL renderer string: ");
+    removeSubString(GPU.GPU, "/PCIe"); //For shortest length
+    removeSubString(GPU.GPU, "/SSE2"); //For shortest length
     removeSubString(GPU.GLVersion, "OpenGL version string: ");
 
     string xrandr = executeCommand("xrandr --current");

@@ -19,7 +19,7 @@ Logos::Logos(Reader::OS &OS, Reader::RAM &RAM, Reader::CPU &CPU, Reader::GPU &GP
     }
 }
 
-void Logos::colorupUsed(string &strUsed, string &strUsedInPercentages) {
+void Logos::colorupUsed(string &strUsed, string strUsedInPercentages) {
     string color;
     strUsedInPercentages.erase(strUsedInPercentages.length() - 1);
     if (stoi(strUsedInPercentages) < 50)

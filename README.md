@@ -6,7 +6,7 @@ Output can colored(default) or nocolored. Logo will be selected automatically ac
 - Operating system - distribution
 - Kernel version
 - Shell
-- Number packages
+- Number of installed packages
 - Desktop Environment
 - CPU
 - GPU
@@ -28,7 +28,9 @@ File /etc/os-release (default exist on systemd systems) or lsb-release package.<
 For detect GPU and OpenGL you must have installed mesa-utils package.
 
 ##Compilation:
-cmake CMakeLists.txt
+cmake CMakeLists.txt -DCMAKE_INSTALL_PREFIX:PATH="/usr" <br>
+make <br>
+sudo make install
 
 ##Usage
 infux \[OPTIONS\] <br><br>
@@ -49,16 +51,15 @@ infux \[OPTIONS\] <br><br>
   - [x] Work on distros without systemd(file /etc/os-release) -> lsb-release (as fallback solutions)<br>
 
 - [ ] **version 0.9:**<br>
-  - [ ] DEB package<br>
-  - [ ] RPM package<br>
-
-- [ ] **version 1.0:**<br>
   - [ ] Resize all logos to same size
+  - [ ] Add more size of logos
   - [ ] Add next logos
   - [ ] Add support for next distributions
+  
+- [ ] **version 1.0:**<br>
 
 ##Version
-Actual version is 0.8.0.
+Actual version is 0.8.1.
 
 #License 
 Code is under GNU GPLv3 license.

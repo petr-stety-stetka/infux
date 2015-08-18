@@ -3,11 +3,11 @@
 #include "Writer.h"
 #include "Str2int.h"
 
-#define VERSION "0.8.0"
+#define VERSION "0.8.1"
 
 string help = "Usage: infux [OPTIONS]\n\n"
         "infux - a program for display info about system (Screenshot Information Tool).\n"
-        "Created by Petr Štětka from Bohemia (Czech) in C++, under GNU GPLv3 license.\n"
+        "Created by Petr Štětka (stetka.peta@gmail.com) from Czech under GNU GPLv3 license.\n"
         "Github: https://github.com/petr-stety-stetka/infux\n\n"
         "Supported LOGOs:\n"
         "   Arch-Linux, Debian, Fedora, GNOME, GNOME-circle, KDE, Linux-Mint,\n"

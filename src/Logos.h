@@ -14,7 +14,7 @@ private:
     string offAll;
     bool color;
 
-    void colorupUsed(string &strUsed, string &strUsedInPercentages);
+    void colorupUsed(string &strUsed, string strUsedInPercentages);
 
     Reader::OS &OS;
     Reader::RAM &RAM;
